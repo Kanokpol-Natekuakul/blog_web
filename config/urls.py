@@ -19,6 +19,8 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),            # signup
+    path('accounts/', include('django.contrib.auth.urls')),  # login, logout, password
     # Blog slugs live at the top level (site.com/{blog-slug}/...), so this
     # include must come last. Slugs colliding with reserved paths like
     # "admin" are shadowed — to be handled with a reserved-slug list later.
