@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ blog.name }}{% endblock %}
+
+{% block content %}
+  <h1>Delete &ldquo;{{ blog.name }}&rdquo;?</h1>
+  <p>This permanently deletes the blog and <strong>all its posts</strong>. This cannot be undone.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'blog:dashboard' %}">Cancel</a>
+  </form>
+{% endblock %}
