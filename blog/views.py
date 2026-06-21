@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
-from .forms import BlogForm
+from .forms import BlogForm, PostForm
 from .models import Blog, Post
 
 
@@ -69,3 +70,62 @@ def blog_delete(request, blog_slug):
         blog.delete()  # cascades to the blog's posts
         return redirect("blog:dashboard")
     return render(request, "blog/blog_confirm_delete.html", {"blog": blog})
+
+
+def _apply_publish_state(post):
+    """Stamp published_at the first time a Post becomes Published.
+
+    The stamp is kept on unpublish/republish, so it records the original
+    publication date.
+    """
+    if post.status == Post.Status.PUBLISHED and post.published_at is None:
+        post.published_at = timezone.now()
+
+
+@login_required
+def post_list(request, blog_slug):
+    """Owner's management list for a Blog: all posts, drafts included."""
+    blog = get_object_or_404(Blog, slug=blog_slug, owner=request.user)
+    return render(request, "blog/post_list.html", {"blog": blog, "posts": blog.posts.all()})
+
+
+@login_required
+def post_create(request, blog_slug):
+    blog = get_object_or_404(Blog, slug=blog_slug, owner=request.user)
+    post = Post(blog=blog)
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post, blog=blog)
+        if form.is_valid():
+            post = form.save(commit=False)
+            _apply_publish_state(post)
+            post.save()
+            return redirect("blog:post_list", blog_slug=blog.slug)
+    else:
+        form = PostForm(instance=post, blog=blog)
+    return render(request, "blog/post_form.html", {"form": form, "blog": blog, "is_create": True})
+
+
+@login_required
+def post_edit(request, blog_slug, post_slug):
+    blog = get_object_or_404(Blog, slug=blog_slug, owner=request.user)
+    post = get_object_or_404(Post, blog=blog, slug=post_slug)
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post, blog=blog)
+        if form.is_valid():
+            post = form.save(commit=False)
+            _apply_publish_state(post)
+            post.save()
+            return redirect("blog:post_list", blog_slug=blog.slug)
+    else:
+        form = PostForm(instance=post, blog=blog)
+    return render(request, "blog/post_form.html", {"form": form, "blog": blog, "is_create": False, "post": post})
+
+
+@login_required
+def post_delete(request, blog_slug, post_slug):
+    blog = get_object_or_404(Blog, slug=blog_slug, owner=request.user)
+    post = get_object_or_404(Post, blog=blog, slug=post_slug)
+    if request.method == "POST":
+        post.delete()
+        return redirect("blog:post_list", blog_slug=blog.slug)
+    return render(request, "blog/post_confirm_delete.html", {"blog": blog, "post": post})

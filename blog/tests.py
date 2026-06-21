@@ -74,3 +74,97 @@ class BlogManagementTests(TestCase):
         self.assertRedirects(resp, reverse("blog:dashboard"))
         self.assertFalse(Blog.objects.filter(slug="alice-blog").exists())
         self.assertEqual(Post.objects.count(), 0)
+
+
+class PostManagementTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-alice-123")
+        self.bob = User.objects.create_user("bob", password="pw-bob-123")
+        self.blog = Blog.objects.create(owner=self.alice, name="Alice Blog", slug="alice-blog")
+
+    def _create(self, **overrides):
+        data = {"title": "Hello", "body": "hi", "slug": "hello", "status": "draft"}
+        data.update(overrides)
+        return self.client.post(reverse("blog:post_create", args=[self.blog.slug]), data)
+
+    def test_create_draft_is_hidden_publicly(self):
+        self.client.force_login(self.alice)
+        self._create(status="draft")
+        post = Post.objects.get(slug="hello")
+        self.assertEqual(post.status, "draft")
+        self.assertIsNone(post.published_at)
+        # public blog page omits it; public post page 404s
+        self.assertNotContains(
+            self.client.get(reverse("blog:blog_detail", args=[self.blog.slug])), "Hello"
+        )
+        self.assertEqual(
+            self.client.get(reverse("blog:post_detail", args=[self.blog.slug, "hello"])).status_code,
+            404,
+        )
+
+    def test_publish_stamps_published_at_and_is_visible(self):
+        self.client.force_login(self.alice)
+        self._create(status="published")
+        post = Post.objects.get(slug="hello")
+        self.assertEqual(post.status, "published")
+        self.assertIsNotNone(post.published_at)
+        self.assertContains(
+            self.client.get(reverse("blog:blog_detail", args=[self.blog.slug])), "Hello"
+        )
+
+    def test_unpublish_keeps_published_at_and_hides(self):
+        self.client.force_login(self.alice)
+        self._create(status="published")
+        post = Post.objects.get(slug="hello")
+        original = post.published_at
+        # edit back to draft
+        self.client.post(
+            reverse("blog:post_edit", args=[self.blog.slug, "hello"]),
+            {"title": "Hello", "body": "hi", "slug": "hello", "status": "draft"},
+        )
+        post.refresh_from_db()
+        self.assertEqual(post.status, "draft")
+        self.assertEqual(post.published_at, original)  # preserved
+        self.assertEqual(
+            self.client.get(reverse("blog:post_detail", args=[self.blog.slug, "hello"])).status_code,
+            404,
+        )
+
+    def test_duplicate_slug_within_blog_rejected(self):
+        Post.objects.create(blog=self.blog, title="One", body="x", slug="dup")
+        self.client.force_login(self.alice)
+        resp = self._create(slug="dup")
+        self.assertEqual(resp.status_code, 200)  # re-rendered with error
+        self.assertEqual(Post.objects.filter(blog=self.blog, slug="dup").count(), 1)
+
+    def test_same_slug_allowed_in_different_blog(self):
+        other = Blog.objects.create(owner=self.alice, name="Other", slug="other")
+        Post.objects.create(blog=other, title="One", body="x", slug="hello")
+        self.client.force_login(self.alice)
+        resp = self._create(slug="hello")  # same slug, different blog
+        self.assertRedirects(resp, reverse("blog:post_list", args=[self.blog.slug]))
+        self.assertTrue(Post.objects.filter(blog=self.blog, slug="hello").exists())
+
+    def test_non_owner_cannot_create_post(self):
+        self.client.force_login(self.bob)
+        resp = self._create()
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(Post.objects.count(), 0)
+
+    def test_non_owner_cannot_edit_or_delete_post(self):
+        Post.objects.create(blog=self.blog, title="One", body="x", slug="p1")
+        self.client.force_login(self.bob)
+        self.assertEqual(
+            self.client.get(reverse("blog:post_edit", args=[self.blog.slug, "p1"])).status_code, 404
+        )
+        self.assertEqual(
+            self.client.post(reverse("blog:post_delete", args=[self.blog.slug, "p1"])).status_code, 404
+        )
+        self.assertTrue(Post.objects.filter(slug="p1").exists())
+
+    def test_owner_can_delete_post(self):
+        Post.objects.create(blog=self.blog, title="One", body="x", slug="p1")
+        self.client.force_login(self.alice)
+        resp = self.client.post(reverse("blog:post_delete", args=[self.blog.slug, "p1"]))
+        self.assertRedirects(resp, reverse("blog:post_list", args=[self.blog.slug]))
+        self.assertFalse(Post.objects.filter(slug="p1").exists())

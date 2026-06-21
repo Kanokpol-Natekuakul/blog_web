@@ -13,6 +13,7 @@
           <a href="{% url 'blog:blog_detail' blog.slug %}">{{ blog.name }}</a>
           <code>/{{ blog.slug }}</code>
           &mdash;
+          <a href="{% url 'blog:post_list' blog.slug %}">Manage posts</a>
           <a href="{% url 'blog:blog_edit' blog.slug %}">Edit</a>
           <a href="{% url 'blog:blog_delete' blog.slug %}">Delete</a>
         </li>
