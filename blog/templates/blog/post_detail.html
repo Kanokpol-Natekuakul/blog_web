@@ -8,6 +8,7 @@
     <h1>{{ post.title }}</h1>
     <p>
       <a href="{% url 'blog:blog_detail' post.blog.slug %}">{{ post.blog.name }}</a>
+      by <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
     </p>
     <div>{{ post.body|markdownify }}</div>
   </article>

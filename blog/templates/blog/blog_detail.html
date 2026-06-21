@@ -4,6 +4,7 @@
 
 {% block content %}
   <h1>{{ blog.name }}</h1>
+  <p>by <a href="{% url 'profile' blog.owner.username %}">@{{ blog.owner.username }}</a></p>
   {% if blog.description %}<p>{{ blog.description }}</p>{% endif %}
 
   {% if posts %}
