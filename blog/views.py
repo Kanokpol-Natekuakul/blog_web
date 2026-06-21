@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import BlogForm, PostForm
-from .models import Blog, Post
+from .models import Blog, Post, Tag
 
 
 def home(request):
@@ -32,6 +32,16 @@ def post_detail(request, blog_slug, post_slug):
         status=Post.Status.PUBLISHED,
     )
     return render(request, "blog/post_detail.html", {"post": post})
+
+
+def tag_detail(request, tag_slug):
+    """Published posts across all blogs that carry this tag."""
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = (
+        tag.posts.filter(status=Post.Status.PUBLISHED)
+        .select_related("blog", "blog__owner")
+    )
+    return render(request, "blog/tag_detail.html", {"tag": tag, "posts": posts})
 
 
 @login_required
@@ -105,6 +115,7 @@ def post_create(request, blog_slug):
             post = form.save(commit=False)
             _apply_publish_state(post)
             post.save()
+            form.save_tags(post)
             return redirect("blog:post_list", blog_slug=blog.slug)
     else:
         form = PostForm(instance=post, blog=blog)
@@ -121,6 +132,7 @@ def post_edit(request, blog_slug, post_slug):
             post = form.save(commit=False)
             _apply_publish_state(post)
             post.save()
+            form.save_tags(post)
             return redirect("blog:post_list", blog_slug=blog.slug)
     else:
         form = PostForm(instance=post, blog=blog)

@@ -14,5 +14,12 @@
       <img class="cover" src="{{ post.cover_image.url }}" alt="">
     {% endif %}
     <div>{{ post.body|markdownify }}</div>
+    {% if post.tags.all %}
+      <p class="tags">
+        {% for tag in post.tags.all %}
+          <a href="{% url 'blog:tag_detail' tag.slug %}">#{{ tag.name }}</a>
+        {% endfor %}
+      </p>
+    {% endif %}
   </article>
 {% endblock %}

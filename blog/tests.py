@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
 
-from .models import Blog, Post
+from .models import Blog, Post, Tag
 from .validators import validate_image_size
 
 
@@ -269,3 +269,49 @@ class CoverImageTests(TestCase):
         )
         self.assertRedirects(resp, reverse("blog:post_list", args=[self.blog.slug]))
         self.assertFalse(Post.objects.get(slug="nc").cover_image)
+
+
+class TagTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-alice-123")
+        self.bob = User.objects.create_user("bob", password="pw-bob-123")
+        self.ablog = Blog.objects.create(owner=self.alice, name="A", slug="a")
+        self.bblog = Blog.objects.create(owner=self.bob, name="B", slug="b")
+
+    def test_tags_created_deduped_and_lowercased(self):
+        self.client.force_login(self.alice)
+        self.client.post(
+            reverse("blog:post_create", args=["a"]),
+            {"title": "T", "body": "x", "slug": "t", "status": "published",
+             "tags": "Python, Django, python"},
+        )
+        post = Post.objects.get(slug="t")
+        self.assertEqual(sorted(post.tags.values_list("name", flat=True)), ["django", "python"])
+
+    def test_editing_replaces_tags(self):
+        post = Post.objects.create(blog=self.ablog, title="T", body="x", slug="t")
+        post.tags.add(Tag.objects.create(name="old", slug="old"))
+        self.client.force_login(self.alice)
+        self.client.post(
+            reverse("blog:post_edit", args=["a", "t"]),
+            {"title": "T", "body": "x", "slug": "t", "status": "draft", "tags": "new"},
+        )
+        self.assertEqual(list(post.tags.values_list("name", flat=True)), ["new"])
+
+    def test_tag_page_published_across_blogs_excludes_drafts(self):
+        tag = Tag.objects.create(name="python", slug="python")
+        p1 = Post.objects.create(blog=self.ablog, title="A post", body="x", slug="p1", status="published")
+        p2 = Post.objects.create(blog=self.bblog, title="B post", body="x", slug="p2", status="published")
+        draft = Post.objects.create(blog=self.ablog, title="Draft post", body="x", slug="p3", status="draft")
+        for p in (p1, p2, draft):
+            p.tags.add(tag)
+        resp = self.client.get(reverse("blog:tag_detail", args=["python"]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "A post")
+        self.assertContains(resp, "B post")
+        self.assertNotContains(resp, "Draft post")
+
+    def test_unknown_tag_404(self):
+        self.assertEqual(
+            self.client.get(reverse("blog:tag_detail", args=["nope"])).status_code, 404
+        )

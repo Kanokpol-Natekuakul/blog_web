@@ -31,3 +31,7 @@ _Avoid_: Unpublished, Hidden, Private
 **Published**:
 The state of a Post that is visible to the public at its URL. Publishing is reversible: a Published Post can be returned to Draft.
 _Avoid_: Live, Public
+
+**Tag**:
+A platform-wide label (not owned by any Blog) attached to Posts for cross-blog discovery. A Tag's page lists published Posts from any Blog that carry it. Names are normalised to lowercase.
+_Avoid_: Category, Label, Topic

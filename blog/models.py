@@ -32,6 +32,19 @@ class Blog(models.Model):
         return self.name
 
 
+class Tag(models.Model):
+    """A platform-wide label. Posts from any Blog can share a Tag."""
+
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=60, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     """A single piece of writing belonging to exactly one Blog.
 
@@ -70,6 +83,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField(null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True, related_name="posts")
 
     class Meta:
         ordering = ["-published_at", "-created"]

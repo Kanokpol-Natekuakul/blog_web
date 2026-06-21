@@ -1,11 +1,12 @@
 from django import forms
+from django.utils.text import slugify
 
-from .models import Blog, Post
+from .models import Blog, Post, Tag
 
 # Slugs that would collide with fixed top-level routes (see config/urls.py).
 # A Blog may not claim these, or its public page would be unreachable.
 RESERVED_SLUGS = {
-    "admin", "accounts", "blogs", "dashboard",
+    "admin", "accounts", "blogs", "dashboard", "tags",
     "static", "media", "login", "logout", "signup",
 }
 
@@ -23,6 +24,11 @@ class BlogForm(forms.ModelForm):
 
 
 class PostForm(forms.ModelForm):
+    tags = forms.CharField(
+        required=False,
+        help_text="Comma-separated, e.g. python, django, web",
+    )
+
     class Meta:
         model = Post
         fields = ["title", "body", "slug", "status", "cover_image"]
@@ -32,6 +38,10 @@ class PostForm(forms.ModelForm):
         # here to validate slug uniqueness within that Blog.
         super().__init__(*args, **kwargs)
         self.blog = blog
+        if self.instance.pk:
+            self.fields["tags"].initial = ", ".join(
+                t.name for t in self.instance.tags.all()
+            )
 
     def clean_slug(self):
         slug = self.cleaned_data["slug"]
@@ -43,3 +53,18 @@ class PostForm(forms.ModelForm):
                 "A post with this slug already exists in this blog."
             )
         return slug
+
+    def save_tags(self, post):
+        """Parse the comma-separated input into Tags and attach them.
+
+        Names are normalised to lowercase so 'Python' and 'python' are one
+        Tag. Call after the Post has a primary key.
+        """
+        names = {n.strip().lower() for n in self.cleaned_data["tags"].split(",")}
+        tags = []
+        for name in names:
+            if not name:
+                continue
+            tag, _ = Tag.objects.get_or_create(name=name, defaults={"slug": slugify(name)})
+            tags.append(tag)
+        post.tags.set(tags)
