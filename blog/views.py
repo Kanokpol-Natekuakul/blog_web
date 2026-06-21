@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .forms import BlogForm, PostForm
-from .models import Blog, Post, Tag
+from .forms import BlogForm, CommentForm, PostForm
+from .models import Blog, Comment, Post, Tag
 
 FEED_PAGE_SIZE = 10
 
@@ -40,7 +41,40 @@ def post_detail(request, blog_slug, post_slug):
         slug=post_slug,
         status=Post.Status.PUBLISHED,
     )
-    return render(request, "blog/post_detail.html", {"post": post})
+    return render(
+        request,
+        "blog/post_detail.html",
+        {
+            "post": post,
+            "comments": post.comments.select_related("author"),
+            "comment_form": CommentForm(),
+        },
+    )
+
+
+@login_required
+@require_POST
+def comment_create(request, post_id):
+    post = get_object_or_404(Post, pk=post_id, status=Post.Status.PUBLISHED)
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.author = request.user
+        comment.save()
+    return redirect("blog:post_detail", blog_slug=post.blog.slug, post_slug=post.slug)
+
+
+@login_required
+@require_POST
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    # Either the comment's author or the blog's owner may delete it.
+    if request.user != comment.author and request.user != comment.post.blog.owner:
+        raise PermissionDenied
+    post = comment.post
+    comment.delete()
+    return redirect("blog:post_detail", blog_slug=post.blog.slug, post_slug=post.slug)
 
 
 def tag_detail(request, tag_slug):

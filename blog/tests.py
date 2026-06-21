@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
 
-from .models import Blog, Post, Tag
+from .models import Blog, Comment, Post, Tag
 from .validators import validate_image_size
 
 
@@ -347,3 +347,58 @@ class FeedTests(TestCase):
         self.client.force_login(self.alice)
         authed = self.client.get(reverse("blog:home"))
         self.assertNotContains(authed, "Write your own blog")
+
+
+class CommentTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-1")  # blog owner
+        self.bob = User.objects.create_user("bob", password="pw-2")      # commenter
+        self.carol = User.objects.create_user("carol", password="pw-3")  # unrelated
+        self.blog = Blog.objects.create(owner=self.alice, name="A", slug="a")
+        self.post = Post.objects.create(
+            blog=self.blog, title="P", body="x", slug="p", status="published"
+        )
+
+    def test_anonymous_cannot_comment(self):
+        resp = self.client.post(
+            reverse("blog:comment_create", args=[self.post.pk]), {"body": "hi"}
+        )
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/accounts/login/", resp.url)
+        self.assertEqual(Comment.objects.count(), 0)
+
+    def test_logged_in_can_comment_and_it_shows(self):
+        self.client.force_login(self.bob)
+        self.client.post(
+            reverse("blog:comment_create", args=[self.post.pk]), {"body": "Nice post!"}
+        )
+        self.assertEqual(Comment.objects.count(), 1)
+        page = self.client.get(reverse("blog:post_detail", args=["a", "p"]))
+        self.assertContains(page, "Nice post!")
+
+    def test_cannot_comment_on_draft(self):
+        draft = Post.objects.create(blog=self.blog, title="D", body="x", slug="d", status="draft")
+        self.client.force_login(self.bob)
+        resp = self.client.post(
+            reverse("blog:comment_create", args=[draft.pk]), {"body": "hi"}
+        )
+        self.assertEqual(resp.status_code, 404)
+
+    def test_author_can_delete_own_comment(self):
+        c = Comment.objects.create(post=self.post, author=self.bob, body="mine")
+        self.client.force_login(self.bob)
+        self.client.post(reverse("blog:comment_delete", args=[c.pk]))
+        self.assertFalse(Comment.objects.filter(pk=c.pk).exists())
+
+    def test_blog_owner_can_delete_any_comment(self):
+        c = Comment.objects.create(post=self.post, author=self.bob, body="bob's")
+        self.client.force_login(self.alice)  # blog owner, not author
+        self.client.post(reverse("blog:comment_delete", args=[c.pk]))
+        self.assertFalse(Comment.objects.filter(pk=c.pk).exists())
+
+    def test_unrelated_user_cannot_delete(self):
+        c = Comment.objects.create(post=self.post, author=self.bob, body="bob's")
+        self.client.force_login(self.carol)
+        resp = self.client.post(reverse("blog:comment_delete", args=[c.pk]))
+        self.assertEqual(resp.status_code, 403)
+        self.assertTrue(Comment.objects.filter(pk=c.pk).exists())

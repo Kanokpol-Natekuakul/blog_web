@@ -1,12 +1,12 @@
 from django import forms
 from django.utils.text import slugify
 
-from .models import Blog, Post, Tag
+from .models import Blog, Comment, Post, Tag
 
 # Slugs that would collide with fixed top-level routes (see config/urls.py).
 # A Blog may not claim these, or its public page would be unreachable.
 RESERVED_SLUGS = {
-    "admin", "accounts", "blogs", "dashboard", "tags",
+    "admin", "accounts", "blogs", "dashboard", "tags", "comments",
     "static", "media", "login", "logout", "signup",
 }
 
@@ -68,3 +68,10 @@ class PostForm(forms.ModelForm):
             tag, _ = Tag.objects.get_or_create(name=name, defaults={"slug": slugify(name)})
             tags.append(tag)
         post.tags.set(tags)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["body"]
+        widgets = {"body": forms.Textarea(attrs={"rows": 3})}

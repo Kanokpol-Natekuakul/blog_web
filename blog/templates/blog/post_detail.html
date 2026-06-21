@@ -22,4 +22,35 @@
       </p>
     {% endif %}
   </article>
+
+  <section class="comments">
+    <h2>Comments</h2>
+    {% for comment in comments %}
+      <div class="comment">
+        <p>
+          <a href="{% url 'profile' comment.author.username %}">@{{ comment.author.username }}</a>
+          <span class="muted">{{ comment.created|date:"M j, Y" }}</span>
+          {% if user == comment.author or user == post.blog.owner %}
+            <form action="{% url 'blog:comment_delete' comment.pk %}" method="post" style="display:inline">
+              {% csrf_token %}
+              <button type="submit">Delete</button>
+            </form>
+          {% endif %}
+        </p>
+        <p>{{ comment.body|linebreaksbr }}</p>
+      </div>
+    {% empty %}
+      <p>No comments yet.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+      <form action="{% url 'blog:comment_create' post.pk %}" method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit">Post comment</button>
+      </form>
+    {% else %}
+      <p><a href="{% url 'login' %}">Log in</a> to comment.</p>
+    {% endif %}
+  </section>
 {% endblock %}

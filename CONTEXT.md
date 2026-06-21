@@ -35,3 +35,7 @@ _Avoid_: Live, Public
 **Tag**:
 A platform-wide label (not owned by any Blog) attached to Posts for cross-blog discovery. A Tag's page lists published Posts from any Blog that carry it. Names are normalised to lowercase.
 _Avoid_: Category, Label, Topic
+
+**Comment**:
+A reader's plain-text remark on a published Post. Requires a logged-in author. Deletable by its author or by the owner of the Blog the Post belongs to (the latter being moderation).
+_Avoid_: Reply, Note

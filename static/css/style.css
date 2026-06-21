@@ -119,3 +119,9 @@ article img { max-width: 100%; height: auto; }
 .feed { list-style: none; padding-left: 0; }
 .feed li { padding-bottom: 1.25rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
 .pagination { display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem; }
+
+/* Comments */
+.comments { margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+.comment { padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.comment .muted { margin-left: 0.5rem; }
+.comment button { padding: 0.1rem 0.45rem; font-size: 0.8rem; }
