@@ -315,3 +315,35 @@ class TagTests(TestCase):
         self.assertEqual(
             self.client.get(reverse("blog:tag_detail", args=["nope"])).status_code, 404
         )
+
+
+class FeedTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-alice-123")
+        self.bob = User.objects.create_user("bob", password="pw-bob-123")
+        self.ablog = Blog.objects.create(owner=self.alice, name="A", slug="a")
+        self.bblog = Blog.objects.create(owner=self.bob, name="B", slug="b")
+
+    def test_feed_shows_published_across_blogs_excludes_drafts(self):
+        Post.objects.create(blog=self.ablog, title="Alice Public", body="x", slug="ap", status="published")
+        Post.objects.create(blog=self.bblog, title="Bob Public", body="x", slug="bp", status="published")
+        Post.objects.create(blog=self.ablog, title="Secret Draft", body="x", slug="sd", status="draft")
+        resp = self.client.get(reverse("blog:home"))
+        self.assertContains(resp, "Alice Public")
+        self.assertContains(resp, "Bob Public")
+        self.assertNotContains(resp, "Secret Draft")
+
+    def test_feed_paginates(self):
+        for i in range(12):
+            Post.objects.create(blog=self.ablog, title=f"P{i}", body="x", slug=f"p{i}", status="published")
+        page1 = self.client.get(reverse("blog:home"))
+        self.assertEqual(len(page1.context["page_obj"].object_list), 10)
+        page2 = self.client.get(reverse("blog:home"), {"page": 2})
+        self.assertEqual(len(page2.context["page_obj"].object_list), 2)
+
+    def test_hero_only_for_anonymous(self):
+        anon = self.client.get(reverse("blog:home"))
+        self.assertContains(anon, "Write your own blog")
+        self.client.force_login(self.alice)
+        authed = self.client.get(reverse("blog:home"))
+        self.assertNotContains(authed, "Write your own blog")

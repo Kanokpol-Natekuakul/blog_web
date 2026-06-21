@@ -114,3 +114,8 @@ article img { max-width: 100%; height: auto; }
 .tags a { margin-right: 0.6rem; color: var(--muted); text-decoration: none; }
 .tags a:hover { color: var(--accent); }
 .muted { color: var(--muted); font-size: 0.9rem; }
+
+/* Feed */
+.feed { list-style: none; padding-left: 0; }
+.feed li { padding-bottom: 1.25rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+.pagination { display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem; }
