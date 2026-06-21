@@ -5,6 +5,7 @@ gunicorn==26.0.0
 Markdown==3.10.2
 nh3==0.3.5
 packaging==26.2
+pillow==12.2.0
 psycopg==3.3.4
 psycopg-binary==3.3.4
 python-dotenv==1.2.2

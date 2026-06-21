@@ -100,7 +100,7 @@ def post_create(request, blog_slug):
     blog = get_object_or_404(Blog, slug=blog_slug, owner=request.user)
     post = Post(blog=blog)
     if request.method == "POST":
-        form = PostForm(request.POST, instance=post, blog=blog)
+        form = PostForm(request.POST, request.FILES, instance=post, blog=blog)
         if form.is_valid():
             post = form.save(commit=False)
             _apply_publish_state(post)
@@ -116,7 +116,7 @@ def post_edit(request, blog_slug, post_slug):
     blog = get_object_or_404(Blog, slug=blog_slug, owner=request.user)
     post = get_object_or_404(Post, blog=blog, slug=post_slug)
     if request.method == "POST":
-        form = PostForm(request.POST, instance=post, blog=blog)
+        form = PostForm(request.POST, request.FILES, instance=post, blog=blog)
         if form.is_valid():
             post = form.save(commit=False)
             _apply_publish_state(post)

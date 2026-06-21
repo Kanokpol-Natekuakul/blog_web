@@ -1,8 +1,21 @@
+import tempfile
+from io import BytesIO
+
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
+from PIL import Image
 
 from .models import Blog, Post
+from .validators import validate_image_size
+
+
+def _image_upload(name="cover.png", fmt="PNG"):
+    buf = BytesIO()
+    Image.new("RGB", (10, 10), "blue").save(buf, format=fmt)
+    return SimpleUploadedFile(name, buf.getvalue(), content_type=f"image/{fmt.lower()}")
 
 
 class BlogManagementTests(TestCase):
@@ -215,3 +228,44 @@ class PolishTests(TestCase):
         self.client.force_login(self.bob)
         resp = self.client.post(reverse("blog:post_toggle", args=[self.blog.slug, "t"]))
         self.assertEqual(resp.status_code, 404)
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class CoverImageTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-alice-123")
+        self.blog = Blog.objects.create(owner=self.alice, name="Alice Blog", slug="alice-blog")
+        self.client.force_login(self.alice)
+
+    def test_create_post_with_cover_image(self):
+        resp = self.client.post(
+            reverse("blog:post_create", args=[self.blog.slug]),
+            {"title": "Hello", "body": "hi", "slug": "hello", "status": "draft",
+             "cover_image": _image_upload()},
+        )
+        self.assertRedirects(resp, reverse("blog:post_list", args=[self.blog.slug]))
+        post = Post.objects.get(slug="hello")
+        self.assertTrue(post.cover_image.name.startswith("covers/"))
+
+    def test_reject_disallowed_extension(self):
+        resp = self.client.post(
+            reverse("blog:post_create", args=[self.blog.slug]),
+            {"title": "H", "body": "x", "slug": "h", "status": "draft",
+             "cover_image": _image_upload("c.gif", "GIF")},
+        )
+        self.assertEqual(resp.status_code, 200)  # re-rendered with error
+        self.assertFalse(Post.objects.filter(slug="h").exists())
+
+    def test_size_validator_rejects_large_file(self):
+        class Big:
+            size = 6 * 1024 * 1024
+        with self.assertRaises(ValidationError):
+            validate_image_size(Big())
+
+    def test_post_without_cover_is_allowed(self):
+        resp = self.client.post(
+            reverse("blog:post_create", args=[self.blog.slug]),
+            {"title": "No Cover", "body": "x", "slug": "nc", "status": "draft"},
+        )
+        self.assertRedirects(resp, reverse("blog:post_list", args=[self.blog.slug]))
+        self.assertFalse(Post.objects.get(slug="nc").cover_image)

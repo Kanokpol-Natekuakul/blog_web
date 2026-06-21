@@ -1,7 +1,10 @@
 import markdown as md
 from django.conf import settings
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.html import strip_tags
+
+from .validators import validate_image_size
 
 
 class Blog(models.Model):
@@ -50,6 +53,15 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     body = models.TextField(help_text="Markdown source")
     slug = models.SlugField(max_length=200)
+    cover_image = models.ImageField(
+        upload_to="covers/",
+        blank=True,
+        null=True,
+        validators=[
+            FileExtensionValidator(["jpg", "jpeg", "png", "webp"]),
+            validate_image_size,
+        ],
+    )
     status = models.CharField(
         max_length=10,
         choices=Status.choices,

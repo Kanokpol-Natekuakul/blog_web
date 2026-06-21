@@ -10,6 +10,9 @@
       <a href="{% url 'blog:blog_detail' post.blog.slug %}">{{ post.blog.name }}</a>
       by <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
     </p>
+    {% if post.cover_image %}
+      <img class="cover" src="{{ post.cover_image.url }}" alt="">
+    {% endif %}
     <div>{{ post.body|markdownify }}</div>
   </article>
 {% endblock %}

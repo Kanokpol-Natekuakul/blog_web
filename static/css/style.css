@@ -104,3 +104,7 @@ article blockquote {
   color: var(--muted);
 }
 article img { max-width: 100%; height: auto; }
+
+/* Cover images */
+.cover { max-width: 100%; height: auto; border-radius: 8px; margin: 0.5rem 0 1.5rem; }
+.thumb { max-width: 160px; height: auto; border-radius: 6px; display: block; margin-bottom: 0.35rem; }

@@ -25,7 +25,7 @@ class BlogForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "body", "slug", "status"]
+        fields = ["title", "body", "slug", "status", "cover_image"]
 
     def __init__(self, *args, blog=None, **kwargs):
         # The owning Blog comes from the URL, not the form, so we receive it

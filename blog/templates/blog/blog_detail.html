@@ -11,6 +11,11 @@
     <ul>
       {% for post in posts %}
         <li>
+          {% if post.cover_image %}
+            <a href="{% url 'blog:post_detail' blog.slug post.slug %}">
+              <img class="thumb" src="{{ post.cover_image.url }}" alt="">
+            </a>
+          {% endif %}
           <a href="{% url 'blog:post_detail' blog.slug post.slug %}">{{ post.title }}</a>
           <p class="excerpt">{{ post.excerpt|truncatewords:40 }}</p>
         </li>
