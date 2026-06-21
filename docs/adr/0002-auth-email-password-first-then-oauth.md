@@ -1,11 +1,11 @@
-# Use Django's built-in auth; email+password first, OAuth later
+# Authentication via django-allauth; email verification on, Google OAuth scaffolded
 
-We use Django's built-in authentication (password hashing, sessions) rather than implementing our own. Although this is a learning project and we considered rolling our own auth to learn the internals, we chose Django's batteries-included auth to ship safely and avoid security mistakes — accepting that we learn auth at the usage/concept level rather than from scratch.
+We use **django-allauth** for account management (signup, login, logout, email verification, and social login), replacing the hand-rolled email+password views from the early build. allauth is the industry standard and gives us verification and OAuth without writing security-sensitive flows ourselves. (We deliberately rolled our own auth first to learn the mechanics, then adopted allauth for the real feature set.)
 
-Email+password is the Phase 1 login method. Google OAuth is deferred to a later phase (e.g. via django-allauth). Facebook was rejected because its app review / business verification is infra overhead unrelated to the learning goal.
+Email verification is **mandatory**: a new account cannot log in until its email is confirmed. In development the console email backend prints the verification link to the terminal; production needs real SMTP.
 
-When OAuth is added, a login that presents an email already tied to an existing account links to that **same account** rather than creating a second one.
+**Google OAuth** is scaffolded (the provider app is installed and configured) but not active — it requires a Google Cloud OAuth client ID/secret, which is deferred until we choose to set it up. When a Google login presents an email already tied to an account, allauth links to that same account.
 
 ## Consequences
 
-Account linking by email is only safe when the email is **verified**. Email verification must be in place before Google OAuth ships. Phase 1 (email+password only) does not require verification.
+Account linking by email is safe here because allauth only treats an email as usable once **verified** — which mandatory verification guarantees — closing the pre-account-hijacking gap noted earlier.

@@ -51,7 +51,7 @@
         <button type="submit">Post comment</button>
       </form>
     {% else %}
-      <p><a href="{% url 'login' %}">Log in</a> to comment.</p>
+      <p><a href="{% url 'account_login' %}">Log in</a> to comment.</p>
     {% endif %}
   </section>
 {% endblock %}

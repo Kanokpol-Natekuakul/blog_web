@@ -23,8 +23,7 @@ from accounts import views as accounts_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),            # signup
-    path('accounts/', include('django.contrib.auth.urls')),  # login, logout, password
+    path('accounts/', include('allauth.urls')),  # login, signup, logout, email verification
     # Public user profiles. The "@" prefix keeps usernames out of the Blog
     # slug namespace (slug routes can't match "@", so order is not critical).
     path('@<str:username>/', accounts_views.profile, name='profile'),

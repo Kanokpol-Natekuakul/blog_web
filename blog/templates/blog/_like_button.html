@@ -10,6 +10,6 @@
     <span class="muted">{{ like_count }}</span>
   {% else %}
     <span class="muted">&hearts; {{ like_count }}</span>
-    <a href="{% url 'login' %}">Log in to like</a>
+    <a href="{% url 'account_login' %}">Log in to like</a>
   {% endif %}
 </span>
