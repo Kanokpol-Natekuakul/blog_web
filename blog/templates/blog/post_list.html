@@ -10,12 +10,10 @@
     <ul>
       {% for post in posts %}
         <li>
-          {{ post.title }} &mdash; <strong>{{ post.get_status_display }}</strong>
+          {{ post.title }} &mdash;
+          {% include "blog/_post_status.html" %}
           <a href="{% url 'blog:post_edit' blog.slug post.slug %}">Edit</a>
           <a href="{% url 'blog:post_delete' blog.slug post.slug %}">Delete</a>
-          {% if post.status == "published" %}
-            <a href="{% url 'blog:post_detail' blog.slug post.slug %}">View</a>
-          {% endif %}
         </li>
       {% endfor %}
     </ul>

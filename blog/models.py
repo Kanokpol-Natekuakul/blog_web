@@ -1,5 +1,7 @@
+import markdown as md
 from django.conf import settings
 from django.db import models
+from django.utils.html import strip_tags
 
 
 class Blog(models.Model):
@@ -68,3 +70,12 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def excerpt(self):
+        """First real paragraph (skipping headings) as plain text, for listings."""
+        for block in self.body.split("\n\n"):
+            text = block.strip()
+            if text and not text.startswith("#"):
+                return strip_tags(md.markdown(text)).strip()
+        return ""

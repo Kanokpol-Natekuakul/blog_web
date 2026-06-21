@@ -1,0 +1,15 @@
+<span id="post-status-{{ post.pk }}" class="post-status">
+  <strong>{{ post.get_status_display }}</strong>
+  <form hx-post="{% url 'blog:post_toggle' blog.slug post.slug %}"
+        hx-target="#post-status-{{ post.pk }}"
+        hx-swap="outerHTML"
+        style="display:inline">
+    {% csrf_token %}
+    <button type="submit">
+      {% if post.status == "published" %}Unpublish{% else %}Publish{% endif %}
+    </button>
+  </form>
+  {% if post.status == "published" %}
+    <a href="{% url 'blog:post_detail' blog.slug post.slug %}">View</a>
+  {% endif %}
+</span>

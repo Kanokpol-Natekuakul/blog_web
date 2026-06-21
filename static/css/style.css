@@ -1,0 +1,106 @@
+:root {
+  --fg: #1a1a1a;
+  --muted: #666;
+  --accent: #2563eb;
+  --border: #e5e7eb;
+  --bg-soft: #f9fafb;
+  --max: 720px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--fg);
+  background: #fff;
+}
+
+.container {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Header / nav */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
+}
+.site-header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.brand { font-weight: 700; text-decoration: none; color: var(--fg); }
+.nav-links { display: flex; align-items: center; gap: 1rem; }
+.nav-links form { margin: 0; }
+
+main { padding-top: 2rem; padding-bottom: 4rem; }
+
+/* Links & text */
+a { color: var(--accent); }
+h1, h2, h3 { line-height: 1.25; }
+.excerpt { color: var(--muted); margin: 0.25rem 0 1.25rem; }
+
+/* Buttons */
+button, .btn {
+  display: inline-block;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  text-decoration: none;
+}
+button:hover, .btn:hover { opacity: 0.9; }
+
+/* Forms */
+input, textarea, select {
+  font: inherit;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+textarea { min-height: 12rem; }
+form p { margin: 0.75rem 0; }
+
+/* Lists */
+ul { padding-left: 1.1rem; }
+li { margin-bottom: 0.5rem; }
+
+/* Post manage status row */
+.post-status { display: inline-flex; align-items: center; gap: 0.5rem; }
+.post-status button { padding: 0.15rem 0.5rem; font-size: 0.85rem; }
+
+/* Hero on landing */
+.hero { padding: 2rem 0; }
+.hero h1 { font-size: 2.25rem; margin-bottom: 0.5rem; }
+.hero p { color: var(--muted); font-size: 1.1rem; }
+.hero .btn { margin-top: 1rem; }
+
+/* Article body */
+article :is(h1, h2, h3) { margin-top: 1.5rem; }
+article pre {
+  background: var(--bg-soft);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+article code { background: var(--bg-soft); padding: 0.1rem 0.3rem; border-radius: 4px; }
+article pre code { background: none; padding: 0; }
+article blockquote {
+  border-left: 3px solid var(--border);
+  margin-left: 0;
+  padding-left: 1rem;
+  color: var(--muted);
+}
+article img { max-width: 100%; height: auto; }

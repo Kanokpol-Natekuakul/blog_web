@@ -168,3 +168,50 @@ class PostManagementTests(TestCase):
         resp = self.client.post(reverse("blog:post_delete", args=[self.blog.slug, "p1"]))
         self.assertRedirects(resp, reverse("blog:post_list", args=[self.blog.slug]))
         self.assertFalse(Post.objects.filter(slug="p1").exists())
+
+
+class PolishTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-alice-123")
+        self.bob = User.objects.create_user("bob", password="pw-bob-123")
+        self.blog = Blog.objects.create(owner=self.alice, name="Alice Blog", slug="alice-blog")
+
+    def test_home_page_ok(self):
+        resp = self.client.get(reverse("blog:home"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Write your own blog")
+
+    def test_excerpt_skips_heading_and_takes_first_paragraph(self):
+        post = Post(
+            blog=self.blog,
+            title="T",
+            slug="t",
+            body="# A Heading\n\nThis is the first paragraph.\n\nSecond paragraph.",
+        )
+        self.assertEqual(post.excerpt, "This is the first paragraph.")
+
+    def test_toggle_publish_flips_state(self):
+        post = Post.objects.create(blog=self.blog, title="T", body="x", slug="t")
+        self.client.force_login(self.alice)
+        resp = self.client.post(reverse("blog:post_toggle", args=[self.blog.slug, "t"]))
+        self.assertEqual(resp.status_code, 200)
+        post.refresh_from_db()
+        self.assertEqual(post.status, "published")
+        self.assertIsNotNone(post.published_at)
+        self.assertContains(resp, "Unpublish")
+        # toggle back
+        self.client.post(reverse("blog:post_toggle", args=[self.blog.slug, "t"]))
+        post.refresh_from_db()
+        self.assertEqual(post.status, "draft")
+
+    def test_toggle_requires_post(self):
+        Post.objects.create(blog=self.blog, title="T", body="x", slug="t")
+        self.client.force_login(self.alice)
+        resp = self.client.get(reverse("blog:post_toggle", args=[self.blog.slug, "t"]))
+        self.assertEqual(resp.status_code, 405)
+
+    def test_non_owner_cannot_toggle(self):
+        Post.objects.create(blog=self.blog, title="T", body="x", slug="t")
+        self.client.force_login(self.bob)
+        resp = self.client.post(reverse("blog:post_toggle", args=[self.blog.slug, "t"]))
+        self.assertEqual(resp.status_code, 404)

@@ -1,9 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from .forms import BlogForm, PostForm
 from .models import Blog, Post
+
+
+def home(request):
+    """Landing page describing the platform."""
+    return render(request, "home.html")
 
 
 def blog_detail(request, blog_slug):
@@ -129,3 +135,19 @@ def post_delete(request, blog_slug, post_slug):
         post.delete()
         return redirect("blog:post_list", blog_slug=blog.slug)
     return render(request, "blog/post_confirm_delete.html", {"blog": blog, "post": post})
+
+
+@login_required
+@require_POST
+def post_toggle_publish(request, blog_slug, post_slug):
+    """Flip a post between Draft and Published (used via HTMX)."""
+    blog = get_object_or_404(Blog, slug=blog_slug, owner=request.user)
+    post = get_object_or_404(Post, blog=blog, slug=post_slug)
+    post.status = (
+        Post.Status.DRAFT
+        if post.status == Post.Status.PUBLISHED
+        else Post.Status.PUBLISHED
+    )
+    _apply_publish_state(post)
+    post.save()
+    return render(request, "blog/_post_status.html", {"blog": blog, "post": post})

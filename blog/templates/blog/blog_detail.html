@@ -12,6 +12,7 @@
       {% for post in posts %}
         <li>
           <a href="{% url 'blog:post_detail' blog.slug post.slug %}">{{ post.title }}</a>
+          <p class="excerpt">{{ post.excerpt|truncatewords:40 }}</p>
         </li>
       {% endfor %}
     </ul>
