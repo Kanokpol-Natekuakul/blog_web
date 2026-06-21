@@ -107,6 +107,24 @@ class Post(models.Model):
         return ""
 
 
+class Like(models.Model):
+    """One user's like of a Post. At most one per (post, user)."""
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="likes"
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["post", "user"], name="unique_like_per_user_post"),
+        ]
+
+    def __str__(self):
+        return f"{self.user} likes {self.post}"
+
+
 class Comment(models.Model):
     """A reader's plain-text comment on a published Post."""
 

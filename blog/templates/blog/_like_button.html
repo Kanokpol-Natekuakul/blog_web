@@ -1,0 +1,15 @@
+<span id="like-button" class="like-button">
+  {% if user.is_authenticated %}
+    <form hx-post="{% url 'blog:like_toggle' post.pk %}"
+          hx-target="#like-button"
+          hx-swap="outerHTML"
+          style="display:inline">
+      {% csrf_token %}
+      <button type="submit">{% if liked %}&hearts; Liked{% else %}&#9825; Like{% endif %}</button>
+    </form>
+    <span class="muted">{{ like_count }}</span>
+  {% else %}
+    <span class="muted">&hearts; {{ like_count }}</span>
+    <a href="{% url 'login' %}">Log in to like</a>
+  {% endif %}
+</span>

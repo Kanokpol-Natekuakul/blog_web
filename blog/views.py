@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import BlogForm, CommentForm, PostForm
-from .models import Blog, Comment, Post, Tag
+from .models import Blog, Comment, Like, Post, Tag
 
 FEED_PAGE_SIZE = 10
 
@@ -41,15 +41,32 @@ def post_detail(request, blog_slug, post_slug):
         slug=post_slug,
         status=Post.Status.PUBLISHED,
     )
-    return render(
-        request,
-        "blog/post_detail.html",
-        {
-            "post": post,
-            "comments": post.comments.select_related("author"),
-            "comment_form": CommentForm(),
-        },
-    )
+    context = {
+        "post": post,
+        "comments": post.comments.select_related("author"),
+        "comment_form": CommentForm(),
+    }
+    context.update(_like_context(post, request.user))
+    return render(request, "blog/post_detail.html", context)
+
+
+def _like_context(post, user):
+    liked = user.is_authenticated and post.likes.filter(user=user).exists()
+    return {"post": post, "liked": liked, "like_count": post.likes.count()}
+
+
+@login_required
+@require_POST
+def like_toggle(request, post_id):
+    post = get_object_or_404(Post, pk=post_id, status=Post.Status.PUBLISHED)
+    like = Like.objects.filter(post=post, user=request.user).first()
+    if like:
+        like.delete()
+    else:
+        Like.objects.create(post=post, user=request.user)
+    if request.headers.get("HX-Request"):
+        return render(request, "blog/_like_button.html", _like_context(post, request.user))
+    return redirect("blog:post_detail", blog_slug=post.blog.slug, post_slug=post.slug)
 
 
 @login_required

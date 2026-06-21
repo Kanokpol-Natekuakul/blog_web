@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
 
-from .models import Blog, Comment, Post, Tag
+from .models import Blog, Comment, Like, Post, Tag
 from .validators import validate_image_size
 
 
@@ -402,3 +402,44 @@ class CommentTests(TestCase):
         resp = self.client.post(reverse("blog:comment_delete", args=[c.pk]))
         self.assertEqual(resp.status_code, 403)
         self.assertTrue(Comment.objects.filter(pk=c.pk).exists())
+
+
+class LikeTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-1")
+        self.bob = User.objects.create_user("bob", password="pw-2")
+        self.blog = Blog.objects.create(owner=self.alice, name="A", slug="a")
+        self.post = Post.objects.create(
+            blog=self.blog, title="P", body="x", slug="p", status="published"
+        )
+
+    def test_anonymous_cannot_like(self):
+        resp = self.client.post(reverse("blog:like_toggle", args=[self.post.pk]))
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Like.objects.count(), 0)
+
+    def test_toggle_likes_then_unlikes(self):
+        self.client.force_login(self.bob)
+        self.client.post(reverse("blog:like_toggle", args=[self.post.pk]))
+        self.assertEqual(Like.objects.filter(post=self.post, user=self.bob).count(), 1)
+        self.client.post(reverse("blog:like_toggle", args=[self.post.pk]))
+        self.assertEqual(Like.objects.filter(post=self.post, user=self.bob).count(), 0)
+
+    def test_like_widget_renders_on_post(self):
+        Like.objects.create(post=self.post, user=self.bob)
+        page = self.client.get(reverse("blog:post_detail", args=["a", "p"]))
+        self.assertContains(page, 'id="like-button"')
+
+    def test_cannot_like_draft(self):
+        draft = Post.objects.create(blog=self.blog, title="D", body="x", slug="d", status="draft")
+        self.client.force_login(self.bob)
+        resp = self.client.post(reverse("blog:like_toggle", args=[draft.pk]))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_htmx_toggle_returns_partial(self):
+        self.client.force_login(self.bob)
+        resp = self.client.post(
+            reverse("blog:like_toggle", args=[self.post.pk]), HTTP_HX_REQUEST="true"
+        )
+        self.assertContains(resp, "Liked")
+        self.assertNotContains(resp, "<!DOCTYPE")

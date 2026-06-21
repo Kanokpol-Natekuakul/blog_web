@@ -6,7 +6,7 @@ from .models import Blog, Comment, Post, Tag
 # Slugs that would collide with fixed top-level routes (see config/urls.py).
 # A Blog may not claim these, or its public page would be unreachable.
 RESERVED_SLUGS = {
-    "admin", "accounts", "blogs", "dashboard", "tags", "comments",
+    "admin", "accounts", "blogs", "dashboard", "tags", "comments", "likes",
     "static", "media", "login", "logout", "signup",
 }
 
