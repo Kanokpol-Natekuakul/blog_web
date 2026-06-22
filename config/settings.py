@@ -215,6 +215,26 @@ ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
+# "Sign in with Google" (allauth google provider). The provider app is always
+# installed, but the button only appears once OAuth credentials are supplied
+# via the environment — same pattern as our other secrets (no DB Social
+# Application or admin step needed). Create the credentials in Google Cloud
+# Console with redirect URI <host>/accounts/google/login/callback/.
+_google_client_id = os.environ.get('GOOGLE_CLIENT_ID', '').strip()
+_google_secret = os.environ.get('GOOGLE_CLIENT_SECRET', '').strip()
+if _google_client_id and _google_secret:
+    SOCIALACCOUNT_PROVIDERS = {
+        'google': {
+            'APPS': [{
+                'client_id': _google_client_id,
+                'secret': _google_secret,
+                'key': '',
+            }],
+            'SCOPE': ['profile', 'email'],
+            'AUTH_PARAMS': {'access_type': 'online'},
+        },
+    }
+
 # Email. In dev, print messages to the console. In production, send over SMTP
 # using credentials from the environment (mandatory email verification means
 # a working sender is required — without it, signups can't be confirmed).

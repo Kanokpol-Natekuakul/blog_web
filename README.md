@@ -116,7 +116,8 @@ verification link, and visit it to activate the account. (Demo users created by
    comment on published posts. A blog owner can moderate (delete) comments.
 6. **Profiles** live at `/@<username>/` and list a user's blogs.
 
-Dark mode follows your operating system's appearance setting — no toggle needed.
+A light/dark theme toggle lives in the header; it remembers your choice and
+follows your operating system's appearance setting by default.
 
 ## Running the tests
 
