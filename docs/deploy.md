@@ -62,6 +62,13 @@ On the host's dashboard, set (see `.env.example` for the full list):
    likely to fail** — if no email arrives, your SMTP env vars are wrong.
 4. Create a blog, publish a post, follow another blog, run a search.
 
+> To populate a staging/demo environment quickly, run
+> `python manage.py seed_demo` from the host shell. It creates demo users
+> (alice/bob/carol, password `demo-pass-123` — override with `--password`)
+> with **verified** emails so they can log in immediately, plus blogs, posts,
+> tags, follows, likes, and comments. It's idempotent. Don't run it against a
+> real production database.
+
 ## 5. (Optional) Google OAuth
 1. Create OAuth credentials in Google Cloud Console; authorised redirect URI:
    `https://<your-host>/accounts/google/login/callback/`.

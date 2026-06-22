@@ -1,9 +1,11 @@
 import tempfile
 from io import BytesIO
 
+from allauth.account.models import EmailAddress
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
@@ -556,3 +558,34 @@ class SearchTests(TestCase):
         resp = self.client.get(reverse("blog:search"), {"q": "zzzznope"})
         self.assertContains(resp, "No posts match")
         self.assertContains(resp, "No blogs match")
+
+
+class SeedDemoCommandTests(TestCase):
+    def test_creates_data_with_verified_logins(self):
+        call_command("seed_demo")
+        self.assertEqual(Blog.objects.count(), 3)
+        self.assertEqual(Post.objects.count(), 7)
+        self.assertTrue(Follow.objects.exists())
+        # Every demo user has a verified primary email (so they can log in).
+        for username in ("alice", "bob", "carol"):
+            user = User.objects.get(username=username)
+            self.assertTrue(
+                EmailAddress.objects.filter(
+                    user=user, verified=True, primary=True
+                ).exists()
+            )
+        # And that login actually works under mandatory verification.
+        self.assertTrue(self.client.login(username="alice", password="demo-pass-123"))
+
+    def test_is_idempotent(self):
+        call_command("seed_demo")
+        counts = (Blog.objects.count(), Post.objects.count(), Follow.objects.count())
+        call_command("seed_demo")
+        self.assertEqual(
+            (Blog.objects.count(), Post.objects.count(), Follow.objects.count()),
+            counts,
+        )
+
+    def test_password_option(self):
+        call_command("seed_demo", "--password", "custom-pw-9")
+        self.assertTrue(self.client.login(username="bob", password="custom-pw-9"))
