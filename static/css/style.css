@@ -230,7 +230,7 @@ button:hover { border-color: var(--accent); color: var(--accent); }
 .nav-links button:hover { color: var(--accent); border-color: transparent; }
 
 /* ---- Forms ---- */
-input, textarea, select {
+input:not([type="checkbox"]):not([type="radio"]), textarea, select {
   font-family: var(--font-body);
   font-size: 1rem;
   width: 100%;
@@ -247,6 +247,15 @@ input:focus, textarea:focus, select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-tint);
 }
+/* Checkboxes/radios (e.g. "Remember me") stay small and inline with the label */
+input[type="checkbox"], input[type="radio"] {
+  width: auto;
+  margin: 0 0.45rem 0 0;
+  accent-color: var(--accent);
+  vertical-align: middle;
+}
+input[type="checkbox"] + label,
+label > input[type="checkbox"] { display: inline; }
 textarea { min-height: 11rem; line-height: 1.6; }
 form p { margin: 0.85rem 0; }
 label { font-size: 0.9rem; color: var(--ink-soft); }
