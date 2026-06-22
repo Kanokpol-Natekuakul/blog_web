@@ -9,6 +9,7 @@ urlpatterns = [
     # Fixed routes first — they must win over the top-level slug patterns
     # below (otherwise "dashboard" etc. would be read as a blog slug).
     path("dashboard/", views.dashboard, name="dashboard"),
+    path("following/", views.following_feed, name="following"),
     path("tags/<slug:tag_slug>/", views.tag_detail, name="tag_detail"),
     path("comments/new/<int:post_id>/", views.comment_create, name="comment_create"),
     path("comments/<int:pk>/delete/", views.comment_delete, name="comment_delete"),

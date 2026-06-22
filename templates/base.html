@@ -13,6 +13,7 @@
       <a class="brand" href="/">Blog Platform</a>
       <span class="nav-links">
         {% if user.is_authenticated %}
+          <a href="{% url 'blog:following' %}">Following</a>
           <a href="{% url 'blog:dashboard' %}">My blogs</a>
           <a href="{% url 'profile' user.username %}">@{{ user.username }}</a>
           <form action="{% url 'account_logout' %}" method="post">

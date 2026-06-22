@@ -489,3 +489,33 @@ class FollowTests(TestCase):
         )
         self.assertContains(resp, "Following")
         self.assertNotContains(resp, "<!DOCTYPE")
+
+
+class FollowingFeedTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-1")
+        self.bob = User.objects.create_user("bob", password="pw-2")
+        self.carol = User.objects.create_user("carol", password="pw-3")
+        self.ablog = Blog.objects.create(owner=self.alice, name="A", slug="a")
+        self.cblog = Blog.objects.create(owner=self.carol, name="C", slug="c")
+
+    def test_requires_login(self):
+        resp = self.client.get(reverse("blog:following"))
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn("/accounts/login/", resp.url)
+
+    def test_shows_only_followed_published_posts(self):
+        Post.objects.create(blog=self.ablog, title="Alice Post", body="x", slug="ap", status="published")
+        Post.objects.create(blog=self.ablog, title="Alice Draft", body="x", slug="ad", status="draft")
+        Post.objects.create(blog=self.cblog, title="Carol Post", body="x", slug="cp", status="published")
+        Follow.objects.create(blog=self.ablog, user=self.bob)  # bob follows A only
+        self.client.force_login(self.bob)
+        resp = self.client.get(reverse("blog:following"))
+        self.assertContains(resp, "Alice Post")
+        self.assertNotContains(resp, "Alice Draft")   # drafts excluded
+        self.assertNotContains(resp, "Carol Post")    # unfollowed blog excluded
+
+    def test_empty_state_when_following_nothing(self):
+        self.client.force_login(self.bob)
+        resp = self.client.get(reverse("blog:following"))
+        self.assertContains(resp, "not following any blogs")

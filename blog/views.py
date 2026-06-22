@@ -22,6 +22,21 @@ def home(request):
     return render(request, "home.html", {"page_obj": page_obj})
 
 
+@login_required
+def following_feed(request):
+    """Personalised feed: recent published posts from blogs the user follows."""
+    posts = (
+        Post.objects.filter(
+            status=Post.Status.PUBLISHED,
+            blog__followers__user=request.user,
+        )
+        .select_related("blog", "blog__owner")
+        .order_by("-published_at", "-created")
+    )
+    page_obj = Paginator(posts, FEED_PAGE_SIZE).get_page(request.GET.get("page"))
+    return render(request, "blog/following.html", {"page_obj": page_obj})
+
+
 def blog_detail(request, blog_slug):
     """Public page for a Blog: lists its published posts."""
     blog = get_object_or_404(Blog, slug=blog_slug)
