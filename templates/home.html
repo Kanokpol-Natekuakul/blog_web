@@ -3,6 +3,11 @@
 {% block title %}Blog Platform{% endblock %}
 
 {% block content %}
+  {% if user.is_authenticated %}
+    {# Hero (with its h1) is only shown to anonymous visitors, so give the
+       signed-in feed a page-level h1 for a correct heading order. #}
+    <h1 class="sr-only">Home — latest posts</h1>
+  {% endif %}
   {% if not user.is_authenticated %}
     <section class="hero">
       <p class="eyebrow">A home for writers</p>

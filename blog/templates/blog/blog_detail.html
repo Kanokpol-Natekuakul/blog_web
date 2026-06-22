@@ -8,7 +8,7 @@
     <h1>{{ blog.name }}</h1>
     <p class="byline">by <a href="{% url 'profile' blog.owner.username %}">@{{ blog.owner.username }}</a></p>
     {% if blog.description %}<p class="blog-desc">{{ blog.description }}</p>{% endif %}
-    <div class="post-actions">{% include "blog/_follow_button.html" %}</div>
+    <div class="post-actions" aria-live="polite">{% include "blog/_follow_button.html" %}</div>
   </header>
 
   {% if posts %}

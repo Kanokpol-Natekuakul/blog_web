@@ -12,6 +12,7 @@
   --rule: #e6dfd4;           /* hairlines */
   --accent: #8c2a2f;         /* oxblood ink */
   --accent-deep: #6e1f24;    /* hover / active */
+  --accent-tint: #f4eae9;  /* fallback for browsers without color-mix */
   --accent-tint: color-mix(in oklab, var(--accent) 8%, var(--paper));
 
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
@@ -42,6 +43,29 @@ body {
   margin: 0 auto;
   padding: 0 1.25rem;
 }
+
+/* ---- Accessibility utilities ---- */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: absolute;
+  left: 0.75rem; top: -4rem;
+  z-index: 100;
+  background: var(--accent);
+  color: var(--paper);
+  padding: 0.55rem 0.95rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 0.75rem; color: var(--paper); }
 
 /* ---- Links (ink by default, oxblood on hover) ---- */
 a {
@@ -137,7 +161,8 @@ main { padding: clamp(1.75rem, 5vw, 3.25rem) 0 4rem; }
 .messages { list-style: none; padding: 0; margin: 0 0 1.75rem; }
 .messages li {
   background: var(--accent-tint);
-  border: 1px solid color-mix(in oklab, var(--accent) 25%, var(--paper));
+  border: 1px solid #e2c9ca;  /* fallback */
+  border-color: color-mix(in oklab, var(--accent) 25%, var(--paper));
   color: var(--accent-deep);
   padding: 0.6rem 0.9rem;
   border-radius: 4px;
@@ -262,8 +287,14 @@ label { font-size: 0.9rem; color: var(--ink-soft); }
   gap: 0.45rem;
   align-items: center;
 }
-.meta a { color: var(--ink-soft); }
-.meta a:hover { color: var(--accent); }
+.meta a, .byline a {
+  color: var(--ink-soft);
+  text-decoration: underline;          /* persistent link affordance (not colour alone) */
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 0.06em;
+}
+.meta a:hover, .byline a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 .meta-sep { opacity: 0.45; }
 
 .excerpt {
@@ -328,6 +359,7 @@ label { font-size: 0.9rem; color: var(--ink-soft); }
   font-size: 1.16rem;
   line-height: 1.75;
   max-width: var(--max-read);
+  overflow-wrap: anywhere;   /* long URLs/words don't force horizontal scroll */
 }
 .post-body p { margin: 0 0 1.25rem; }
 /* signature: drop cap on the opening paragraph */

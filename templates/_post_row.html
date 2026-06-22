@@ -15,8 +15,9 @@
   </p>
   <p class="excerpt">{{ post.excerpt|truncatewords:40 }}</p>
   {% if post.cover_image %}
-    <a class="feed-thumb" href="{% url 'blog:post_detail' post.blog.slug post.slug %}">
-      <img src="{{ post.cover_image.url }}" alt="">
+    {# Decorative — duplicates the title link, so hide from assistive tech. #}
+    <a class="feed-thumb" href="{% url 'blog:post_detail' post.blog.slug post.slug %}" tabindex="-1" aria-hidden="true">
+      <img src="{{ post.cover_image.url }}" alt="" loading="lazy">
     </a>
   {% endif %}
 </li>

@@ -9,7 +9,7 @@
   </header>
 
   <form action="{% url 'blog:search' %}" method="get" class="search-form">
-    <input type="search" name="q" value="{{ query }}" placeholder="Search posts and blogs" autofocus>
+    <input type="search" name="q" value="{{ query }}" placeholder="Search posts and blogs" aria-label="Search posts and blogs" autofocus>
     <button type="submit">Search</button>
   </form>
 
