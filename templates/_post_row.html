@@ -1,5 +1,3 @@
-{# One post as a feed card. Expects `post`. Pass `hide_byline=True` on a
-   blog's own page to show the date instead of the redundant blog/author. #}
 <li class="feed-item">
   <h3 class="feed-title">
     <a href="{% url 'blog:post_detail' post.blog.slug post.slug %}">{{ post.title }}</a>
