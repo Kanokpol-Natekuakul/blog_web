@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import BlogForm, CommentForm, PostForm
-from .models import Blog, Comment, Like, Post, Tag
+from .models import Blog, Comment, Follow, Like, Post, Tag
 
 FEED_PAGE_SIZE = 10
 
@@ -26,7 +26,37 @@ def blog_detail(request, blog_slug):
     """Public page for a Blog: lists its published posts."""
     blog = get_object_or_404(Blog, slug=blog_slug)
     posts = blog.posts.filter(status=Post.Status.PUBLISHED)
-    return render(request, "blog/blog_detail.html", {"blog": blog, "posts": posts})
+    context = {"blog": blog, "posts": posts}
+    context.update(_follow_context(blog, request.user))
+    return render(request, "blog/blog_detail.html", context)
+
+
+def _follow_context(blog, user):
+    following = user.is_authenticated and blog.followers.filter(user=user).exists()
+    # An owner can't follow their own blog; hide the button for them.
+    can_follow = user.is_authenticated and user != blog.owner
+    return {
+        "blog": blog,
+        "following": following,
+        "can_follow": can_follow,
+        "follower_count": blog.followers.count(),
+    }
+
+
+@login_required
+@require_POST
+def follow_toggle(request, blog_slug):
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    if request.user == blog.owner:
+        raise PermissionDenied  # you can't follow your own blog
+    follow = Follow.objects.filter(blog=blog, user=request.user).first()
+    if follow:
+        follow.delete()
+    else:
+        Follow.objects.create(blog=blog, user=request.user)
+    if request.headers.get("HX-Request"):
+        return render(request, "blog/_follow_button.html", _follow_context(blog, request.user))
+    return redirect("blog:blog_detail", blog_slug=blog.slug)
 
 
 def post_detail(request, blog_slug, post_slug):

@@ -125,6 +125,28 @@ class Like(models.Model):
         return f"{self.user} likes {self.post}"
 
 
+class Follow(models.Model):
+    """One user's follow of a Blog. At most one per (blog, user).
+
+    Following a Blog subscribes the user to its published Posts, which show
+    up on their personalised feed at ``/following``.
+    """
+
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name="followers")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="following"
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["blog", "user"], name="unique_follow_per_user_blog"),
+        ]
+
+    def __str__(self):
+        return f"{self.user} follows {self.blog}"
+
+
 class Comment(models.Model):
     """A reader's plain-text comment on a published Post."""
 

@@ -13,6 +13,7 @@ urlpatterns = [
     path("comments/new/<int:post_id>/", views.comment_create, name="comment_create"),
     path("comments/<int:pk>/delete/", views.comment_delete, name="comment_delete"),
     path("likes/toggle/<int:post_id>/", views.like_toggle, name="like_toggle"),
+    path("follow/toggle/<slug:blog_slug>/", views.follow_toggle, name="follow_toggle"),
     path("blogs/new/", views.blog_create, name="blog_create"),
     path("blogs/<slug:blog_slug>/edit/", views.blog_edit, name="blog_edit"),
     path("blogs/<slug:blog_slug>/delete/", views.blog_delete, name="blog_delete"),

@@ -1,0 +1,17 @@
+<span id="follow-button" class="follow-button">
+  {% if can_follow %}
+    <form hx-post="{% url 'blog:follow_toggle' blog.slug %}"
+          hx-target="#follow-button"
+          hx-swap="outerHTML"
+          style="display:inline">
+      {% csrf_token %}
+      <button type="submit">{% if following %}&#10003; Following{% else %}+ Follow{% endif %}</button>
+    </form>
+    <span class="muted">{{ follower_count }} follower{{ follower_count|pluralize }}</span>
+  {% elif user.is_authenticated %}
+    <span class="muted">{{ follower_count }} follower{{ follower_count|pluralize }}</span>
+  {% else %}
+    <span class="muted">{{ follower_count }} follower{{ follower_count|pluralize }}</span>
+    <a href="{% url 'account_login' %}">Log in to follow</a>
+  {% endif %}
+</span>

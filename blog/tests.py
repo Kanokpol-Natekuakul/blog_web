@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
 
-from .models import Blog, Comment, Like, Post, Tag
+from .models import Blog, Comment, Follow, Like, Post, Tag
 from .validators import validate_image_size
 
 
@@ -442,4 +442,50 @@ class LikeTests(TestCase):
             reverse("blog:like_toggle", args=[self.post.pk]), HTTP_HX_REQUEST="true"
         )
         self.assertContains(resp, "Liked")
+        self.assertNotContains(resp, "<!DOCTYPE")
+
+
+class FollowTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-1")  # blog owner
+        self.bob = User.objects.create_user("bob", password="pw-2")      # follower
+        self.blog = Blog.objects.create(owner=self.alice, name="A", slug="a")
+
+    def test_anonymous_cannot_follow(self):
+        resp = self.client.post(reverse("blog:follow_toggle", args=["a"]))
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(Follow.objects.count(), 0)
+
+    def test_toggle_follows_then_unfollows(self):
+        self.client.force_login(self.bob)
+        self.client.post(reverse("blog:follow_toggle", args=["a"]))
+        self.assertEqual(Follow.objects.filter(blog=self.blog, user=self.bob).count(), 1)
+        self.client.post(reverse("blog:follow_toggle", args=["a"]))
+        self.assertEqual(Follow.objects.filter(blog=self.blog, user=self.bob).count(), 0)
+
+    def test_owner_cannot_follow_own_blog(self):
+        self.client.force_login(self.alice)
+        resp = self.client.post(reverse("blog:follow_toggle", args=["a"]))
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(Follow.objects.count(), 0)
+
+    def test_follow_button_renders_for_other_user(self):
+        self.client.force_login(self.bob)
+        page = self.client.get(reverse("blog:blog_detail", args=["a"]))
+        self.assertContains(page, 'id="follow-button"')
+        self.assertContains(page, "Follow")
+
+    def test_owner_sees_count_but_no_button(self):
+        Follow.objects.create(blog=self.blog, user=self.bob)
+        self.client.force_login(self.alice)
+        page = self.client.get(reverse("blog:blog_detail", args=["a"]))
+        self.assertContains(page, "1 follower")
+        self.assertNotContains(page, "hx-post")  # no toggle form for the owner
+
+    def test_htmx_toggle_returns_partial(self):
+        self.client.force_login(self.bob)
+        resp = self.client.post(
+            reverse("blog:follow_toggle", args=["a"]), HTTP_HX_REQUEST="true"
+        )
+        self.assertContains(resp, "Following")
         self.assertNotContains(resp, "<!DOCTYPE")

@@ -7,6 +7,8 @@
   <p>by <a href="{% url 'profile' blog.owner.username %}">@{{ blog.owner.username }}</a></p>
   {% if blog.description %}<p>{{ blog.description }}</p>{% endif %}
 
+  <p>{% include "blog/_follow_button.html" %}</p>
+
   {% if posts %}
     <ul>
       {% for post in posts %}

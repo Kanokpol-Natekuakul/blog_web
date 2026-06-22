@@ -39,3 +39,7 @@ _Avoid_: Category, Label, Topic
 **Comment**:
 A reader's plain-text remark on a published Post. Requires a logged-in author. Deletable by its author or by the owner of the Blog the Post belongs to (the latter being moderation).
 _Avoid_: Reply, Note
+
+**Follow**:
+A logged-in User's subscription to a Blog (the publication, not its owner). Following a Blog adds its published Posts to that User's personalised feed. At most one Follow per (User, Blog).
+_Avoid_: Subscribe, Friend, Watch

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Blog, Post, Tag
+from .models import Blog, Follow, Post, Tag
 
 
 @admin.register(Tag)
@@ -24,3 +24,9 @@ class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title", "body")
     filter_horizontal = ("tags",)
+
+
+@admin.register(Follow)
+class FollowAdmin(admin.ModelAdmin):
+    list_display = ("user", "blog", "created")
+    search_fields = ("user__username", "blog__name")
