@@ -19,7 +19,9 @@
       </p>
     </header>
     {% if post.cover_image %}
-      <img class="cover" src="{{ post.cover_image.url }}" alt="">
+      <img class="cover" src="{{ post.cover_image.url }}" alt=""
+           width="{{ post.cover_image.width }}" height="{{ post.cover_image.height }}"
+           decoding="async">
     {% endif %}
     <div class="post-body">{{ post.body|markdownify }}</div>
     {% if post.tags.all %}

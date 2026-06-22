@@ -349,6 +349,7 @@ label { font-size: 0.9rem; color: var(--ink-soft); }
 
 .cover {
   width: 100%;
+  height: auto;            /* honour the intrinsic ratio from width/height attrs (no CLS) */
   max-height: 28rem;
   object-fit: cover;
   border-radius: 4px;
