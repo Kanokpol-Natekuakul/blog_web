@@ -9,6 +9,14 @@ Markdown. Posts are **Drafts** until **Published**, can carry platform-wide
 **Tags**, and readers can **Comment**, **Like**, and **Follow** a blog to build
 a personalised feed. There's a global home feed and full-text-ish **search**.
 
+## Live demo
+
+**https://blog-web-4f6n.onrender.com**
+
+Try it with a seeded demo account — `alice`, `bob`, or `carol`, password
+`demo-pass-123` — or sign up your own. Hosted on Render's free tier, so the
+first request after it's been idle can take ~30s to wake up.
+
 ## Features
 
 - **Accounts** — email/username signup & login with mandatory email
@@ -19,16 +27,18 @@ a personalised feed. There's a global home feed and full-text-ish **search**.
   posts (title + body) and blogs (name + description).
 - **Social** — comments (with owner moderation), likes, and following a blog for
   a personalised `/following` feed.
-- **Polished UI** — an editorial "ink on paper" design, automatic dark mode
-  (follows the OS), WCAG AA contrast, keyboard/skip-link support, responsive
-  touch targets. No build step — server-rendered templates + a little HTMX.
+- **Polished UI** — an editorial "ink on paper" design with a light/dark theme
+  toggle (remembers your choice; follows the OS by default), WCAG AA contrast,
+  keyboard/skip-link support, and responsive touch targets. No build step —
+  server-rendered templates + a little HTMX.
 
 ## Tech stack
 
 Django 6 · PostgreSQL (SQLite for local dev) · server-rendered Django templates
-+ HTMX · django-allauth · Markdown + nh3 (sanitisation) · WhiteNoise + Gunicorn
-for production. Python **3.13**. See [`docs/adr/`](docs/adr/) for the decisions
-behind these choices.
++ HTMX · django-allauth · Markdown + nh3 (sanitisation) · WhiteNoise + Gunicorn.
+Deployed on Render with **Cloudinary** for uploaded media and **Brevo** (via
+django-anymail) for transactional email. Python **3.13**. See
+[`docs/adr/`](docs/adr/) for the decisions behind these choices.
 
 ## Getting started (local development)
 
@@ -129,6 +139,8 @@ docs/        ADRs, phase build plans, and the deploy runbook
 ## Deployment
 
 The code is production-ready (Gunicorn, WhiteNoise, `DATABASE_URL`, env-driven
-secrets, SSL/HSTS hardening when `DEBUG=False`). Step-by-step instructions —
-Postgres, environment variables, SMTP, and known limitations — are in
+secrets, SSL/HSTS hardening when `DEBUG=False`). A `render.yaml` Blueprint
+provisions the web service + Postgres on Render in one step; email is sent via
+the Brevo HTTPS API (`BREVO_API_KEY`) and uploads are stored on Cloudinary
+(`CLOUDINARY_URL`). Step-by-step instructions and known limitations are in
 **[`docs/deploy.md`](docs/deploy.md)**.
