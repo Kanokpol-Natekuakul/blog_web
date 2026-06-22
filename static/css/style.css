@@ -20,6 +20,25 @@
 
   --max: 46rem;              /* page column */
   --max-read: 40rem;         /* reading measure */
+
+  color-scheme: light dark;  /* let native controls/scrollbars follow the theme */
+}
+
+/* Dark mode — the same ink-on-paper identity at night: warm near-black
+   paper, warm light ink, and a lightened oxblood that keeps AA contrast.
+   Overriding the tokens lets the whole component system follow automatically. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181410;
+    --paper-raised: #221c17;
+    --ink: #ece5db;
+    --ink-soft: #a89e94;
+    --rule: #332b24;
+    --accent: #e0746e;
+    --accent-deep: #ec8a82;
+    --accent-tint: #2c1c1a;  /* fallback for browsers without color-mix */
+    --accent-tint: color-mix(in oklab, var(--accent) 14%, var(--paper));
+  }
 }
 
 * { box-sizing: border-box; }
