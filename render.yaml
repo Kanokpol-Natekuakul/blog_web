@@ -6,7 +6,8 @@
 databases:
   - name: blog-db
     plan: free
-    databaseName: blog
+    region: singapore          # MUST match the web service's region for
+    databaseName: blog         # private (internal) networking to resolve
     user: blog
 
 services:
