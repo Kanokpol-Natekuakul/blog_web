@@ -1,0 +1,45 @@
+# Render Blueprint — provisions the web service + PostgreSQL in one step.
+# In the Render dashboard: New → Blueprint → connect this repo. Render reads
+# this file, creates everything, and asks you to fill the email vars below.
+# Docs: https://render.com/docs/blueprint-spec  ·  see also docs/deploy.md
+
+databases:
+  - name: blog-db
+    plan: free
+    databaseName: blog
+    user: blog
+
+services:
+  - type: web
+    name: blog-web
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    # migrate before serving; gunicorn serves the WSGI app
+    startCommand: "python manage.py migrate && gunicorn config.wsgi"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.7"
+      - key: SECRET_KEY
+        generateValue: true          # Render generates a strong secret
+      - key: DEBUG
+        value: "False"               # turns on SSL redirect, secure cookies, HSTS
+      - key: DATABASE_URL
+        fromDatabase:
+          name: blog-db
+          property: connectionString
+      # ALLOWED_HOSTS / CSRF are derived from RENDER_EXTERNAL_HOSTNAME in settings.
+      # ---- Email (required: signup needs verification). Fill these in. ----
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: EMAIL_USE_TLS
+        value: "True"
+      - key: DEFAULT_FROM_EMAIL
+        sync: false

@@ -20,6 +20,19 @@ What's left is host setup and the secrets only you can provide.
 - (Optional) Google OAuth credentials, only if you want the "Sign in with
   Google" button to work. The site runs fine without it.
 
+## Option A — one-click Blueprint (recommended)
+
+The repo ships a `render.yaml`. In Render: **New → Blueprint**, connect this
+repo, and Render provisions the Postgres database and web service, generates
+`SECRET_KEY`, wires `DATABASE_URL`, and sets `DEBUG=False` automatically. It
+will prompt you for the **email vars** (`EMAIL_HOST`, `EMAIL_HOST_USER`,
+`EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL`) — fill those from your SMTP
+provider. `ALLOWED_HOSTS`/CSRF are derived from the service hostname in
+settings, so there's nothing else to set. Then skip to **step 4** to smoke-test.
+
+Steps 1–3 below are the **manual alternative** (Option B) if you'd rather click
+through the dashboard yourself.
+
 ## 1. Provision Postgres
 Create a Postgres instance on the host and copy its **internal** connection
 URL. It becomes the `DATABASE_URL` env var. `psycopg` (v3) is already in
