@@ -5,19 +5,23 @@
 {% block content %}
   {% if not user.is_authenticated %}
     <section class="hero">
-      <h1>Write your own blog.</h1>
-      <p>Create as many blogs as you like, write in Markdown, and publish to the world.</p>
+      <p class="eyebrow">A home for writers</p>
+      <h1>Write something worth keeping.</h1>
+      <p>Start a blog, write in Markdown, and publish to readers who follow your work — run as many blogs as you like, all from one place.</p>
       <p>
-        <a class="btn" href="{% url 'account_signup' %}">Get started</a>
+        <a class="btn" href="{% url 'account_signup' %}">Start writing</a>
         <a href="{% url 'account_login' %}">Log in</a>
       </p>
     </section>
   {% endif %}
 
-  <h2>Latest posts</h2>
+  <header class="section-head">
+    <p class="eyebrow">Fresh ink</p>
+    <h2>Latest posts</h2>
+  </header>
   {% if page_obj.object_list %}
     {% include "_feed.html" %}
   {% else %}
-    <p>No posts yet. Be the first to publish!</p>
+    <p class="muted">No posts yet — be the first to publish.</p>
   {% endif %}
 {% endblock %}

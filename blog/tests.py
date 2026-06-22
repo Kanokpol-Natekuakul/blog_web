@@ -194,7 +194,7 @@ class PolishTests(TestCase):
     def test_home_page_ok(self):
         resp = self.client.get(reverse("blog:home"))
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "Write your own blog")
+        self.assertContains(resp, "A home for writers")  # hero eyebrow
 
     def test_excerpt_skips_heading_and_takes_first_paragraph(self):
         post = Post(
@@ -345,10 +345,10 @@ class FeedTests(TestCase):
 
     def test_hero_only_for_anonymous(self):
         anon = self.client.get(reverse("blog:home"))
-        self.assertContains(anon, "Write your own blog")
+        self.assertContains(anon, "A home for writers")
         self.client.force_login(self.alice)
         authed = self.client.get(reverse("blog:home"))
-        self.assertNotContains(authed, "Write your own blog")
+        self.assertNotContains(authed, "A home for writers")
 
 
 class CommentTests(TestCase):

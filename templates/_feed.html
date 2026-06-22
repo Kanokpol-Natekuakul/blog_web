@@ -1,18 +1,21 @@
 {# Renders a paginated list of posts. Expects `page_obj` in context. #}
 <ul class="feed">
   {% for post in page_obj %}
-    <li>
+    <li class="feed-item">
+      <h3 class="feed-title">
+        <a href="{% url 'blog:post_detail' post.blog.slug post.slug %}">{{ post.title }}</a>
+      </h3>
+      <p class="meta">
+        <a href="{% url 'blog:blog_detail' post.blog.slug %}">{{ post.blog.name }}</a>
+        <span class="meta-sep">·</span>
+        <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
+      </p>
+      <p class="excerpt">{{ post.excerpt|truncatewords:40 }}</p>
       {% if post.cover_image %}
-        <a href="{% url 'blog:post_detail' post.blog.slug post.slug %}">
-          <img class="thumb" src="{{ post.cover_image.url }}" alt="">
+        <a class="feed-thumb" href="{% url 'blog:post_detail' post.blog.slug post.slug %}">
+          <img src="{{ post.cover_image.url }}" alt="">
         </a>
       {% endif %}
-      <a href="{% url 'blog:post_detail' post.blog.slug post.slug %}">{{ post.title }}</a>
-      <span class="muted">
-        &mdash; {{ post.blog.name }}
-        by <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
-      </span>
-      <p class="excerpt">{{ post.excerpt|truncatewords:40 }}</p>
     </li>
   {% endfor %}
 </ul>

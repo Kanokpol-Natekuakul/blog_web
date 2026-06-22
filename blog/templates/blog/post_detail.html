@@ -4,17 +4,24 @@
 {% block title %}{{ post.title }} — {{ post.blog.name }}{% endblock %}
 
 {% block content %}
-  <article>
-    <h1>{{ post.title }}</h1>
-    <p>
-      <a href="{% url 'blog:blog_detail' post.blog.slug %}">{{ post.blog.name }}</a>
-      by <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
-    </p>
-    <p class="likes">{% include "blog/_like_button.html" %}</p>
+  <article class="post">
+    <header class="post-head">
+      <p class="eyebrow">
+        <a href="{% url 'blog:blog_detail' post.blog.slug %}">{{ post.blog.name }}</a>
+      </p>
+      <h1 class="post-title">{{ post.title }}</h1>
+      <p class="byline">
+        <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
+        {% if post.published_at %}
+          <span class="meta-sep">·</span>
+          <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"F j, Y" }}</time>
+        {% endif %}
+      </p>
+    </header>
     {% if post.cover_image %}
       <img class="cover" src="{{ post.cover_image.url }}" alt="">
     {% endif %}
-    <div>{{ post.body|markdownify }}</div>
+    <div class="post-body">{{ post.body|markdownify }}</div>
     {% if post.tags.all %}
       <p class="tags">
         {% for tag in post.tags.all %}
@@ -22,6 +29,7 @@
         {% endfor %}
       </p>
     {% endif %}
+    <div class="post-actions">{% include "blog/_like_button.html" %}</div>
   </article>
 
   <section class="comments">

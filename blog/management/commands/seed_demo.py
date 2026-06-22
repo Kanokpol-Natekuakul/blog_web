@@ -32,9 +32,10 @@ POSTS = {
     "python-weekly": [
         ("django-orm-tips", "Five Django ORM tips", "published",
          ["python", "django"],
-         "# Django ORM tips\n\nThe ORM rewards a little study. Here are five "
-         "things I reach for often.\n\nUse `select_related` to avoid N+1 "
-         "queries. Reach for `Q` objects when filters get conditional."),
+         "The ORM rewards a little study. Here are five things I reach for "
+         "often.\n\nUse `select_related` to avoid N+1 queries. Reach for `Q` "
+         "objects when filters get conditional, and let the database do the "
+         "counting instead of pulling rows into Python."),
         ("type-hints", "Why I finally use type hints", "published",
          ["python"],
          "Type hints caught a whole class of bugs before runtime for me. "
@@ -46,8 +47,8 @@ POSTS = {
     "travel-log": [
         ("kyoto-autumn", "Kyoto in autumn", "published",
          ["travel"],
-         "# Kyoto in autumn\n\nThe maples turn and the temples empty out by "
-         "dusk. Go early, walk slowly."),
+         "The maples turn and the temples empty out by dusk. Go early, walk "
+         "slowly, and let the light do the rest."),
         ("sleeper-trains", "In praise of sleeper trains", "published",
          ["travel"],
          "You board tired in one city and wake up rested in another. The best "
@@ -56,8 +57,8 @@ POSTS = {
     "cooking-notes": [
         ("weeknight-dal", "A weeknight dal", "published",
          ["food"],
-         "# Weeknight dal\n\nRed lentils, onion, tomato, and whatever spices "
-         "are open. Twenty minutes, one pot."),
+         "Red lentils, onion, tomato, and whatever spices are open. Twenty "
+         "minutes, one pot, almost no washing up."),
         ("draft-bread", "Sourdough attempt #4 (draft)", "draft",
          ["food"],
          "The crumb is closer. The crust still fights me."),
