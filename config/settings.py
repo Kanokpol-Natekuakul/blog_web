@@ -174,10 +174,21 @@ STORAGES = {
 # When a Cloudinary account is configured (CLOUDINARY_URL env), store uploaded
 # media there — local/host filesystems are ephemeral, so cover images would
 # otherwise vanish on redeploy (see ADR-0005). Falls back to local files.
-if os.environ.get('CLOUDINARY_URL'):
+#
+# Normalise the value first: tolerate a pasted "CLOUDINARY_URL=" prefix or
+# surrounding quotes, and only enable Cloudinary when it's a valid URL.
+# Otherwise drop it and fall back to local storage — a bad value must not
+# crash startup (the cloudinary package validates the scheme at import time).
+_cloudinary_url = os.environ.get('CLOUDINARY_URL', '').strip().strip('"').strip("'")
+if _cloudinary_url.startswith('CLOUDINARY_URL='):
+    _cloudinary_url = _cloudinary_url[len('CLOUDINARY_URL='):].strip()
+if _cloudinary_url.startswith('cloudinary://'):
+    os.environ['CLOUDINARY_URL'] = _cloudinary_url
     STORAGES['default'] = {
         'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
     }
+else:
+    os.environ.pop('CLOUDINARY_URL', None)
 
 # Production hardening (only when DEBUG is off).
 if not DEBUG:
