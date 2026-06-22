@@ -70,11 +70,18 @@ class Post(models.Model):
         upload_to="covers/",
         blank=True,
         null=True,
+        width_field="cover_width",
+        height_field="cover_height",
         validators=[
             FileExtensionValidator(["jpg", "jpeg", "png", "webp"]),
             validate_image_size,
         ],
     )
+    # Dimensions cached at upload so templates can set <img width/height>
+    # (avoids layout shift) without opening the file — important once the
+    # image lives on remote storage like Cloudinary.
+    cover_width = models.PositiveIntegerField(null=True, blank=True, editable=False)
+    cover_height = models.PositiveIntegerField(null=True, blank=True, editable=False)
     status = models.CharField(
         max_length=10,
         choices=Status.choices,

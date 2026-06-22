@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'cloudinary_storage',
+    'cloudinary',
     'blog',
     'accounts',
 ]
@@ -168,6 +170,14 @@ STORAGES = {
         ),
     },
 }
+
+# When a Cloudinary account is configured (CLOUDINARY_URL env), store uploaded
+# media there — local/host filesystems are ephemeral, so cover images would
+# otherwise vanish on redeploy (see ADR-0005). Falls back to local files.
+if os.environ.get('CLOUDINARY_URL'):
+    STORAGES['default'] = {
+        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+    }
 
 # Production hardening (only when DEBUG is off).
 if not DEBUG:

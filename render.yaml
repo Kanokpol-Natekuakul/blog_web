@@ -38,3 +38,7 @@ services:
         sync: false
       - key: DEFAULT_FROM_EMAIL
         sync: false
+      # Cloudinary stores uploaded cover images (filesystem is ephemeral).
+      # CLOUDINARY_URL = cloudinary://<api_key>:<api_secret>@<cloud_name>
+      - key: CLOUDINARY_URL
+        sync: false
