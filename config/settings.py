@@ -199,6 +199,11 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # a working sender is required — without it, signups can't be confirmed).
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+elif os.environ.get('BREVO_API_KEY'):
+    # Hosts like Render block outbound SMTP ports, so prefer Brevo's HTTPS
+    # transactional API (port 443) when an API key is provided.
+    EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+    ANYMAIL = {'BREVO_API_KEY': os.environ['BREVO_API_KEY']}
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
@@ -206,6 +211,7 @@ else:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+    EMAIL_TIMEOUT = 10  # fail fast instead of hanging a worker if SMTP is blocked
 
 DEFAULT_FROM_EMAIL = os.environ.get(
     'DEFAULT_FROM_EMAIL', 'no-reply@blogplatform.local'

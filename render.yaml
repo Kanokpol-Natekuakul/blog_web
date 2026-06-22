@@ -31,16 +31,10 @@ services:
           name: blog-db
           property: connectionString
       # ALLOWED_HOSTS / CSRF are derived from RENDER_EXTERNAL_HOSTNAME in settings.
-      # ---- Email (required: signup needs verification). Fill these in. ----
-      - key: EMAIL_HOST
+      # ---- Email via Brevo HTTPS API (Render blocks outbound SMTP ports). ----
+      # BREVO_API_KEY = a v3 API key from Brevo (SMTP & API → API Keys).
+      # DEFAULT_FROM_EMAIL = a sender verified in Brevo → Senders.
+      - key: BREVO_API_KEY
         sync: false
-      - key: EMAIL_PORT
-        value: "587"
-      - key: EMAIL_HOST_USER
-        sync: false
-      - key: EMAIL_HOST_PASSWORD
-        sync: false
-      - key: EMAIL_USE_TLS
-        value: "True"
       - key: DEFAULT_FROM_EMAIL
         sync: false
