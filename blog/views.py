@@ -243,11 +243,17 @@ def post_create(request, blog_slug):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES, instance=post, blog=blog)
         if form.is_valid():
-            post = form.save(commit=False)
-            _apply_publish_state(post)
-            post.save()
-            form.save_tags(post)
-            return redirect("blog:post_list", blog_slug=blog.slug)
+            try:
+                post = form.save(commit=False)
+                _apply_publish_state(post)
+                post.save()
+                form.save_tags(post)
+                return redirect("blog:post_list", blog_slug=blog.slug)
+            except Exception as e:
+                import traceback
+                from django.http import HttpResponse
+                tb = traceback.format_exc()
+                return HttpResponse(f"Exception during post creation:\n{tb}", content_type="text/plain", status=500)
     else:
         form = PostForm(instance=post, blog=blog)
     return render(request, "blog/post_form.html", {"form": form, "blog": blog, "is_create": True})
