@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -20,6 +21,31 @@ def home(request):
     )
     page_obj = Paginator(posts, FEED_PAGE_SIZE).get_page(request.GET.get("page"))
     return render(request, "home.html", {"page_obj": page_obj})
+
+
+def search(request):
+    """Search published Posts (title + body) and Blogs (name + description).
+
+    Case-insensitive substring match (``icontains``) — fine on SQLite; a
+    Postgres full-text upgrade is a later optimisation (see the Phase 3 plan).
+    """
+    query = request.GET.get("q", "").strip()
+    posts = blogs = []
+    if query:
+        posts = (
+            Post.objects.filter(status=Post.Status.PUBLISHED)
+            .filter(Q(title__icontains=query) | Q(body__icontains=query))
+            .select_related("blog", "blog__owner")
+            .order_by("-published_at", "-created")
+        )
+        blogs = Blog.objects.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        ).select_related("owner")
+    return render(
+        request,
+        "blog/search.html",
+        {"query": query, "posts": posts, "blogs": blogs},
+    )
 
 
 @login_required

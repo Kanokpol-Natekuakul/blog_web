@@ -11,6 +11,9 @@
   <header class="site-header">
     <nav class="container">
       <a class="brand" href="/">Blog Platform</a>
+      <form action="{% url 'blog:search' %}" method="get" class="nav-search" role="search">
+        <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search">
+      </form>
       <span class="nav-links">
         {% if user.is_authenticated %}
           <a href="{% url 'blog:following' %}">Following</a>

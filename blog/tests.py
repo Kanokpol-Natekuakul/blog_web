@@ -519,3 +519,40 @@ class FollowingFeedTests(TestCase):
         self.client.force_login(self.bob)
         resp = self.client.get(reverse("blog:following"))
         self.assertContains(resp, "not following any blogs")
+
+
+class SearchTests(TestCase):
+    def setUp(self):
+        self.alice = User.objects.create_user("alice", password="pw-1")
+        self.blog = Blog.objects.create(
+            owner=self.alice, name="Python Weekly", slug="pw", description="All about snakes"
+        )
+
+    def test_blank_query_shows_no_results(self):
+        resp = self.client.get(reverse("blog:search"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(list(resp.context["posts"]), [])
+        self.assertEqual(list(resp.context["blogs"]), [])
+
+    def test_matches_post_title_and_body(self):
+        Post.objects.create(blog=self.blog, title="Django tips", body="x", slug="dt", status="published")
+        Post.objects.create(blog=self.blog, title="Other", body="a django guide", slug="o", status="published")
+        resp = self.client.get(reverse("blog:search"), {"q": "django"})
+        self.assertContains(resp, "Django tips")
+        self.assertContains(resp, "Other")
+
+    def test_excludes_drafts(self):
+        Post.objects.create(blog=self.blog, title="Secret django", body="x", slug="s", status="draft")
+        resp = self.client.get(reverse("blog:search"), {"q": "django"})
+        self.assertNotContains(resp, "Secret django")
+
+    def test_matches_blog_name_and_description(self):
+        resp = self.client.get(reverse("blog:search"), {"q": "snakes"})
+        self.assertContains(resp, "Python Weekly")  # matched via description
+        resp = self.client.get(reverse("blog:search"), {"q": "python"})
+        self.assertContains(resp, "Python Weekly")  # matched via name
+
+    def test_no_match_shows_empty_message(self):
+        resp = self.client.get(reverse("blog:search"), {"q": "zzzznope"})
+        self.assertContains(resp, "No posts match")
+        self.assertContains(resp, "No blogs match")

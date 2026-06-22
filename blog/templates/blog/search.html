@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{% if query %}Search: {{ query }}{% else %}Search{% endif %}{% endblock %}
+
+{% block content %}
+  <h1>Search</h1>
+
+  <form action="{% url 'blog:search' %}" method="get" class="search-form">
+    <input type="search" name="q" value="{{ query }}" placeholder="Search posts and blogs" autofocus>
+    <button type="submit">Search</button>
+  </form>
+
+  {% if query %}
+    <h2>Blogs <span class="muted">({{ blogs|length }})</span></h2>
+    {% if blogs %}
+      <ul>
+        {% for blog in blogs %}
+          <li>
+            <a href="{% url 'blog:blog_detail' blog.slug %}">{{ blog.name }}</a>
+            <span class="muted">by <a href="{% url 'profile' blog.owner.username %}">@{{ blog.owner.username }}</a></span>
+            {% if blog.description %}<p class="excerpt">{{ blog.description|truncatewords:30 }}</p>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No blogs match "{{ query }}".</p>
+    {% endif %}
+
+    <h2>Posts <span class="muted">({{ posts|length }})</span></h2>
+    {% if posts %}
+      <ul class="feed">
+        {% for post in posts %}
+          <li>
+            <a href="{% url 'blog:post_detail' post.blog.slug post.slug %}">{{ post.title }}</a>
+            <span class="muted">
+              &mdash; {{ post.blog.name }}
+              by <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
+            </span>
+            <p class="excerpt">{{ post.excerpt|truncatewords:40 }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">No posts match "{{ query }}".</p>
+    {% endif %}
+  {% endif %}
+{% endblock %}
