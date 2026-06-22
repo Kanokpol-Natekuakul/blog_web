@@ -83,10 +83,14 @@ On the host's dashboard, set (see `.env.example` for the full list):
 > real production database.
 
 ## 5. (Optional) Google OAuth
-1. Create OAuth credentials in Google Cloud Console; authorised redirect URI:
-   `https://<your-host>/accounts/google/login/callback/`.
-2. In Django admin → **Social applications**, add a Google app with the
-   client id/secret and attach it to your site (`SITE_ID = 1`).
+1. In **Google Cloud Console** → *APIs & Services → Credentials*, create an
+   **OAuth client ID** (type: *Web application*). Add the authorised redirect
+   URI: `https://<your-host>/accounts/google/login/callback/` (and
+   `http://127.0.0.1:8000/accounts/google/login/callback/` for local testing).
+2. Set the resulting credentials as environment variables — `GOOGLE_CLIENT_ID`
+   and `GOOGLE_CLIENT_SECRET` (Render dashboard, or your local `.env`). The
+   "Sign in with Google" button appears automatically once both are present; no
+   Django admin / Social Application step is needed.
 
 ---
 
