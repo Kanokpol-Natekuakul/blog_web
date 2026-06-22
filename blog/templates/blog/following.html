@@ -3,11 +3,14 @@
 {% block title %}Following{% endblock %}
 
 {% block content %}
-  <h1>Following</h1>
+  <header class="section-head">
+    <p class="eyebrow">Your feed</p>
+    <h1>Following</h1>
+  </header>
   {% if page_obj.object_list %}
     {% include "_feed.html" %}
   {% else %}
-    <p>You're not following any blogs yet — or the ones you follow haven't published anything.</p>
-    <p>Find blogs to follow from the <a href="{% url 'blog:home' %}">latest posts</a>.</p>
+    <p class="empty">You're not following any blogs yet — or the ones you follow haven't published anything.</p>
+    <p class="muted">Find blogs to follow from the <a href="{% url 'blog:home' %}">latest posts</a>.</p>
   {% endif %}
 {% endblock %}

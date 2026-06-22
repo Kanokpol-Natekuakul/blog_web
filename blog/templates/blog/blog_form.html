@@ -3,11 +3,18 @@
 {% block title %}{% if is_create %}New blog{% else %}Edit blog{% endif %}{% endblock %}
 
 {% block content %}
-  <h1>{% if is_create %}New blog{% else %}Edit {{ blog.name }}{% endif %}</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-  </form>
-  <p><a href="{% url 'blog:dashboard' %}">Back to my blogs</a></p>
+  <div class="form-page">
+    <header class="section-head">
+      <p class="eyebrow">{% if is_create %}New blog{% else %}Edit blog{% endif %}</p>
+      <h1>{% if is_create %}Start a blog{% else %}{{ blog.name }}{% endif %}</h1>
+    </header>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button type="submit" class="btn">{% if is_create %}Create blog{% else %}Save changes{% endif %}</button>
+      </div>
+    </form>
+    <a class="backlink" href="{% url 'blog:dashboard' %}">&larr; Back to my blogs</a>
+  </div>
 {% endblock %}

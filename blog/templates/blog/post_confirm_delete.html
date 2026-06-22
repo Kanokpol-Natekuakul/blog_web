@@ -3,11 +3,18 @@
 {% block title %}Delete {{ post.title }}{% endblock %}
 
 {% block content %}
-  <h1>Delete &ldquo;{{ post.title }}&rdquo;?</h1>
-  <p>This permanently deletes the post. This cannot be undone.</p>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-    <a href="{% url 'blog:post_list' blog.slug %}">Cancel</a>
-  </form>
+  <div class="form-page">
+    <header class="section-head">
+      <p class="eyebrow">Delete</p>
+      <h1>Delete &ldquo;{{ post.title }}&rdquo;?</h1>
+    </header>
+    <p class="page-intro">This permanently deletes the post. This can't be undone.</p>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" class="btn">Yes, delete</button>
+        <a href="{% url 'blog:post_list' blog.slug %}">Cancel</a>
+      </div>
+    </form>
+  </div>
 {% endblock %}

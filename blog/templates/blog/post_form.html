@@ -3,11 +3,18 @@
 {% block title %}{% if is_create %}New post{% else %}Edit post{% endif %}{% endblock %}
 
 {% block content %}
-  <h1>{% if is_create %}New post in &ldquo;{{ blog.name }}&rdquo;{% else %}Edit {{ post.title }}{% endif %}</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-  </form>
-  <p><a href="{% url 'blog:post_list' blog.slug %}">Back to posts</a></p>
+  <div class="form-page">
+    <header class="section-head">
+      <p class="eyebrow">{% if is_create %}New post · {{ blog.name }}{% else %}Edit post{% endif %}</p>
+      <h1>{% if is_create %}Write a post{% else %}{{ post.title }}{% endif %}</h1>
+    </header>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button type="submit" class="btn">Save post</button>
+      </div>
+    </form>
+    <a class="backlink" href="{% url 'blog:post_list' blog.slug %}">&larr; Back to posts</a>
+  </div>
 {% endblock %}

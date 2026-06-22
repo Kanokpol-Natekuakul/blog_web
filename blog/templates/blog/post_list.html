@@ -3,23 +3,28 @@
 {% block title %}Posts — {{ blog.name }}{% endblock %}
 
 {% block content %}
-  <h1>Posts in &ldquo;{{ blog.name }}&rdquo;</h1>
-  <p><a href="{% url 'blog:post_create' blog.slug %}">+ New post</a></p>
+  <header class="section-head">
+    <p class="eyebrow">{{ blog.name }}</p>
+    <h1>Posts</h1>
+  </header>
+  <p class="actions"><a class="btn" href="{% url 'blog:post_create' blog.slug %}">New post</a></p>
 
   {% if posts %}
-    <ul>
+    <ul class="manage-list">
       {% for post in posts %}
         <li>
-          {{ post.title }} &mdash;
+          <span class="item-name">{{ post.title }}</span>
           {% include "blog/_post_status.html" %}
-          <a href="{% url 'blog:post_edit' blog.slug post.slug %}">Edit</a>
-          <a href="{% url 'blog:post_delete' blog.slug post.slug %}">Delete</a>
+          <span class="item-actions">
+            <a href="{% url 'blog:post_edit' blog.slug post.slug %}">Edit</a>
+            <a href="{% url 'blog:post_delete' blog.slug post.slug %}">Delete</a>
+          </span>
         </li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>No posts yet.</p>
+    <p class="empty">No posts yet.</p>
   {% endif %}
 
-  <p><a href="{% url 'blog:dashboard' %}">Back to my blogs</a></p>
+  <a class="backlink" href="{% url 'blog:dashboard' %}">&larr; Back to my blogs</a>
 {% endblock %}

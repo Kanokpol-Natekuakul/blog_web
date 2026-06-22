@@ -3,7 +3,10 @@
 {% block title %}{% if query %}Search: {{ query }}{% else %}Search{% endif %}{% endblock %}
 
 {% block content %}
-  <h1>Search</h1>
+  <header class="section-head">
+    <p class="eyebrow">Search</p>
+    <h1>{% if query %}&ldquo;{{ query }}&rdquo;{% else %}Search{% endif %}</h1>
+  </header>
 
   <form action="{% url 'blog:search' %}" method="get" class="search-form">
     <input type="search" name="q" value="{{ query }}" placeholder="Search posts and blogs" autofocus>
@@ -11,37 +14,34 @@
   </form>
 
   {% if query %}
-    <h2>Blogs <span class="muted">({{ blogs|length }})</span></h2>
-    {% if blogs %}
-      <ul>
-        {% for blog in blogs %}
-          <li>
-            <a href="{% url 'blog:blog_detail' blog.slug %}">{{ blog.name }}</a>
-            <span class="muted">by <a href="{% url 'profile' blog.owner.username %}">@{{ blog.owner.username }}</a></span>
-            {% if blog.description %}<p class="excerpt">{{ blog.description|truncatewords:30 }}</p>{% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="muted">No blogs match "{{ query }}".</p>
-    {% endif %}
+    <section class="results-group">
+      <p class="eyebrow">Blogs &middot; {{ blogs|length }}</p>
+      {% if blogs %}
+        <ul class="blog-list">
+          {% for blog in blogs %}
+            <li>
+              <p class="item-name">
+                <a href="{% url 'blog:blog_detail' blog.slug %}">{{ blog.name }}</a>
+                <span class="muted">by <a href="{% url 'profile' blog.owner.username %}">@{{ blog.owner.username }}</a></span>
+              </p>
+              {% if blog.description %}<p>{{ blog.description|truncatewords:30 }}</p>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty">No blogs match &ldquo;{{ query }}&rdquo;.</p>
+      {% endif %}
+    </section>
 
-    <h2>Posts <span class="muted">({{ posts|length }})</span></h2>
-    {% if posts %}
-      <ul class="feed">
-        {% for post in posts %}
-          <li>
-            <a href="{% url 'blog:post_detail' post.blog.slug post.slug %}">{{ post.title }}</a>
-            <span class="muted">
-              &mdash; {{ post.blog.name }}
-              by <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
-            </span>
-            <p class="excerpt">{{ post.excerpt|truncatewords:40 }}</p>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="muted">No posts match "{{ query }}".</p>
-    {% endif %}
+    <section class="results-group">
+      <p class="eyebrow">Posts &middot; {{ posts|length }}</p>
+      {% if posts %}
+        <ul class="feed">
+          {% for post in posts %}{% include "_post_row.html" %}{% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty">No posts match &ldquo;{{ query }}&rdquo;.</p>
+      {% endif %}
+    </section>
   {% endif %}
 {% endblock %}

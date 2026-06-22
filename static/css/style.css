@@ -435,6 +435,59 @@ label { font-size: 0.9rem; color: var(--ink-soft); }
 .muted { color: var(--ink-soft); font-size: 0.9rem; }
 
 /* ============================================================
+   Inner pages — shared components
+   ============================================================ */
+.section-head h1 { font-size: clamp(2rem, 4vw, 2.85rem); margin: 0.25rem 0 0; }
+.page-intro { color: var(--ink-soft); margin: 0.6rem 0 0; max-width: 48ch; }
+.empty { color: var(--ink-soft); margin: 1.5rem 0; }
+
+.actions { margin: 1.4rem 0 0; }
+.backlink { display: inline-block; margin-top: 2.25rem; color: var(--ink-soft); font-size: 0.9rem; }
+.backlink:hover { color: var(--accent); }
+
+/* Blog masthead (public blog page) */
+.blog-head { margin: 0 0 2rem; }
+.blog-head h1 { font-size: clamp(2rem, 4.5vw, 3rem); margin: 0.3rem 0 0.45rem; letter-spacing: -0.02em; }
+.blog-head .byline { margin: 0 0 0.95rem; }
+.blog-head .blog-desc { color: var(--ink-soft); font-size: 1.12rem; line-height: 1.55; max-width: 50ch; margin: 0 0 1.15rem; }
+
+/* Management lists (dashboard, post manage) */
+.manage-list { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+.manage-list li {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: 0.4rem 1rem; padding: 0.95rem 0; border-bottom: 1px solid var(--rule);
+}
+.manage-list .item-name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.manage-list .item-name a { color: var(--ink); }
+.manage-list .item-name a:hover { color: var(--accent); }
+.manage-list .item-slug {
+  color: var(--ink-soft); font-size: 0.8rem;
+  background: var(--paper-raised); padding: 0.1rem 0.45rem; border-radius: 3px;
+}
+.manage-list .item-actions { margin-left: auto; display: flex; gap: 1rem; font-size: 0.86rem; }
+.manage-list .item-actions a { color: var(--ink-soft); }
+.manage-list .item-actions a:hover { color: var(--accent); }
+
+/* Blog list (profile) */
+.blog-list { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+.blog-list li { padding: 1.05rem 0; border-bottom: 1px solid var(--rule); }
+.blog-list .item-name { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; margin: 0; }
+.blog-list .item-name a { color: var(--ink); }
+.blog-list .item-name a:hover { color: var(--accent); }
+.blog-list p { color: var(--ink-soft); margin: 0.3rem 0 0; max-width: 52ch; }
+
+/* Form pages */
+.form-page { max-width: 34rem; }
+.form-page form { margin-top: 1.5rem; }
+.form-actions { margin-top: 1.1rem; }
+.form-actions a { margin-left: 1rem; color: var(--ink-soft); font-size: 0.9rem; }
+.form-actions a:hover { color: var(--accent); }
+
+/* Search result groups */
+.results-group { margin: 0 0 2.75rem; }
+.results-group .eyebrow { margin-bottom: 0.85rem; }
+
+/* ============================================================
    Motion — one quiet page-load rise, staggered
    ============================================================ */
 @keyframes rise {

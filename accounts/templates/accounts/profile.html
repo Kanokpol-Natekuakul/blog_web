@@ -3,16 +3,21 @@
 {% block title %}@{{ profile_user.username }}{% endblock %}
 
 {% block content %}
-  <h1>@{{ profile_user.username }}</h1>
+  <header class="section-head">
+    <p class="eyebrow">Profile</p>
+    <h1>@{{ profile_user.username }}</h1>
+  </header>
 
   {% if blogs %}
-    <h2>Blogs</h2>
-    <ul>
+    <ul class="blog-list">
       {% for blog in blogs %}
-        <li><a href="{% url 'blog:blog_detail' blog.slug %}">{{ blog.name }}</a></li>
+        <li>
+          <p class="item-name"><a href="{% url 'blog:blog_detail' blog.slug %}">{{ blog.name }}</a></p>
+          {% if blog.description %}<p>{{ blog.description }}</p>{% endif %}
+        </li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>No blogs yet.</p>
+    <p class="empty">No blogs yet.</p>
   {% endif %}
 {% endblock %}
