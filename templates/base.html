@@ -6,6 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#181410" media="(prefers-color-scheme: dark)">
+  <script>
+    // Apply the saved theme before first paint to avoid a flash of the wrong theme.
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
   <title>{% block title %}Blog Platform{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +29,7 @@
       <form action="{% url 'blog:search' %}" method="get" class="nav-search" role="search">
         <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search" aria-label="Search posts and blogs">
       </form>
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode"></button>
       <span class="nav-links">
         {% if user.is_authenticated %}
           <a href="{% url 'blog:following' %}">Following</a>
@@ -47,5 +57,32 @@
   </main>
 
   <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <script>
+    // Header theme toggle: flips light/dark, remembers the choice, and keeps
+    // the icon in sync with the effective theme (system default until chosen).
+    (function () {
+      var btn = document.querySelector('.theme-toggle');
+      if (!btn) return;
+      var root = document.documentElement;
+      function effective() {
+        var t = root.getAttribute('data-theme');
+        if (t) return t;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      function sync() {
+        var dark = effective() === 'dark';
+        btn.textContent = dark ? '☀' : '☾';
+        btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+        btn.setAttribute('title', btn.getAttribute('aria-label'));
+      }
+      sync();
+      btn.addEventListener('click', function () {
+        var next = effective() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        sync();
+      });
+    })();
+  </script>
 </body>
 </html>
