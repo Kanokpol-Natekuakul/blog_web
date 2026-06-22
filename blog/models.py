@@ -1,10 +1,9 @@
 import markdown as md
 from django.conf import settings
-from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.html import strip_tags
 
-from .validators import validate_image_size
+from .validators import validate_file_extension, validate_image_size
 
 
 class Blog(models.Model):
@@ -73,7 +72,7 @@ class Post(models.Model):
         width_field="cover_width",
         height_field="cover_height",
         validators=[
-            FileExtensionValidator(["jpg", "jpeg", "png", "webp"]),
+            validate_file_extension,
             validate_image_size,
         ],
     )
