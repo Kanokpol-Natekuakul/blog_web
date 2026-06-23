@@ -4,18 +4,22 @@
 {% block title %}{{ post.title }} — {{ post.blog.name }}{% endblock %}
 
 {% block content %}
-  <article class="post">
+  <article class="post {{ post.pk|accent_class }}">
     <header class="post-head">
-      <p class="eyebrow">
-        <a href="{% url 'blog:blog_detail' post.blog.slug %}">{{ post.blog.name }}</a>
+      <p>
+        <span class="pill">{% with tag=post.tags.first %}{{ tag.name|default:post.blog.name }}{% endwith %}</span>
       </p>
       <h1 class="post-title">{{ post.title }}</h1>
       <p class="byline">
-        <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
-        {% if post.published_at %}
-          <span class="meta-sep">·</span>
-          <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"F j, Y" }}</time>
-        {% endif %}
+        <span class="avatar" aria-hidden="true">{{ post.blog.owner.username|first|upper }}</span>
+        <span class="who">
+          <a href="{% url 'blog:blog_detail' post.blog.slug %}"><b>{{ post.blog.name }}</b></a>
+          by <a href="{% url 'profile' post.blog.owner.username %}">@{{ post.blog.owner.username }}</a>
+          {% if post.published_at %}
+            <span class="meta-sep">·</span>
+            <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"F j, Y" }}</time>
+          {% endif %}
+        </span>
       </p>
     </header>
     {% if post.cover_image %}

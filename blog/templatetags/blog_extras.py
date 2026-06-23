@@ -30,3 +30,20 @@ def markdownify(value):
     html = md.markdown(value or "", extensions=["fenced_code", "tables"])
     clean = nh3.clean(html, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES)
     return mark_safe(clean)
+
+
+# The editorial design has no real "categories", so we colour each post card
+# deterministically from its primary key — stable per post, lively in a grid.
+_ACCENTS = (
+    "cat--tech", "cat--culture", "cat--design",
+    "cat--science", "cat--business", "cat--opinion",
+)
+
+
+@register.filter
+def accent_class(pk):
+    """Map a post's pk to one of the six category accent classes."""
+    try:
+        return _ACCENTS[int(pk) % len(_ACCENTS)]
+    except (TypeError, ValueError):
+        return _ACCENTS[0]

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
+{% load blog_extras %}
 
 {% block title %}Blog Platform{% endblock %}
 
 {% block content %}
   {% if user.is_authenticated %}
     <h1 class="sr-only">Home — latest posts</h1>
-  {% endif %}
-  {% if not user.is_authenticated %}
+  {% else %}
     <section class="hero">
       <p class="eyebrow">A home for writers</p>
       <h1>Write something worth keeping.</h1>
@@ -18,12 +18,54 @@
     </section>
   {% endif %}
 
-  <header class="section-head">
-    <p class="eyebrow">Fresh ink</p>
-    <h2>Latest posts</h2>
-  </header>
   {% if page_obj.object_list %}
-    {% include "_feed.html" %}
+    {% if page_obj.number == 1 %}
+      {% with featured=page_obj.0 %}
+        <article class="cover-card {{ featured.pk|accent_class }}{% if not featured.cover_image %} cover-card--bare{% endif %}">
+          {% if featured.cover_image %}
+            <a class="cover-figure" href="{% url 'blog:post_detail' featured.blog.slug featured.slug %}" tabindex="-1" aria-hidden="true">
+              <img src="{{ featured.cover_image.url }}" alt="">
+              <span class="folio">№ {{ featured.pk }} · LATEST</span>
+            </a>
+          {% endif %}
+          <div class="cover-body">
+            <span class="cover-label">Featured · {% with tag=featured.tags.first %}{{ tag.name|default:featured.blog.name }}{% endwith %}</span>
+            <h2><a href="{% url 'blog:post_detail' featured.blog.slug featured.slug %}">{{ featured.title }}</a></h2>
+            <p class="excerpt">{{ featured.excerpt|truncatewords:36 }}</p>
+            <p class="byline">
+              <span class="avatar" aria-hidden="true">{{ featured.blog.owner.username|first|upper }}</span>
+              <span class="who">
+                <a href="{% url 'blog:blog_detail' featured.blog.slug %}"><b>{{ featured.blog.name }}</b></a>
+                {% if featured.published_at %}<span class="meta-sep">·</span> <time datetime="{{ featured.published_at|date:'c' }}">{{ featured.published_at|date:"M j, Y" }}</time>{% endif %}
+              </span>
+            </p>
+          </div>
+        </article>
+      {% endwith %}
+    {% endif %}
+
+    <header class="section-head">
+      <div>
+        <p class="eyebrow">Fresh ink</p>
+        <h2>Latest posts</h2>
+      </div>
+    </header>
+
+    <ul class="feed">
+      {% for post in page_obj %}
+        {% if page_obj.number != 1 or not forloop.first %}
+          {% include "_post_row.html" %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+
+    {% if page_obj.has_other_pages %}
+      <nav class="pagination">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">← Newer</a>{% endif %}
+        <span class="muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Older →</a>{% endif %}
+      </nav>
+    {% endif %}
   {% else %}
     <p class="muted">No posts yet — be the first to publish.</p>
   {% endif %}

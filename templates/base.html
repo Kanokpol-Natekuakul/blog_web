@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#FCFBF8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#181410" media="(prefers-color-scheme: dark)">
   <script>
     // Apply the saved theme before first paint to avoid a flash of the wrong theme.
@@ -18,14 +18,14 @@
   <title>{% block title %}Blog Platform{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <nav class="container">
-      <a class="brand" href="/">Blog Platform</a>
+    <nav aria-label="Primary">
+      <a class="brand" href="/">Blog Platform<sup>Open edition</sup></a>
       <form action="{% url 'blog:search' %}" method="get" class="nav-search" role="search">
         <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search" aria-label="Search posts and blogs">
       </form>
@@ -45,6 +45,20 @@
         {% endif %}
       </span>
     </nav>
+    <div class="subnav">
+      <div class="container">
+        <span class="tagline">Essays &amp; posts, published in the open</span>
+        <span class="links">
+          <a href="{% url 'blog:home' %}">Latest</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'blog:following' %}">Following</a>
+            <a href="{% url 'blog:dashboard' %}">Write</a>
+          {% else %}
+            <a href="{% url 'account_signup' %}">Start writing</a>
+          {% endif %}
+        </span>
+      </div>
+    </div>
   </header>
 
   <main class="container" id="main">
@@ -55,6 +69,19 @@
     {% endif %}
     {% block content %}{% endblock %}
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand">
+        <a class="brand" href="/">Blog Platform<sup>Open edition</sup></a>
+        <p>Start a blog, write in Markdown, and publish to readers who follow your work — all in one place.</p>
+      </div>
+      <p class="footer-base">
+        © {% now "Y" %} Blog Platform<br>
+        Set in Libre Caslon &amp; Inter · Folios in Space Mono
+      </p>
+    </div>
+  </footer>
 
   <script src="https://unpkg.com/htmx.org@2.0.4"></script>
   <script>
