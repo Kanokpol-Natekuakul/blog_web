@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System — RECTO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/recto.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="container">
+    <div class="nav-row1">
+      <a class="brandmark" href="index.html">RECTO<sup>Design system</sup></a>
+      <div class="nav-actions">
+        <a class="link-arrow" href="index.html">← Back to homepage</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="sg-section">
+    <span class="kicker">RECTO · Design System</span>
+    <h1 class="display" style="font-size:clamp(2.6rem,5vw,4rem);margin:.2em 0 .3em">The component library</h1>
+    <p style="max-width:60ch;color:var(--ink-2);font-size:1.1rem">Every token, type role and component used across the magazine. The signature is the monospace <b>production slug</b> — folio number, section, read-time — threaded through every surface.</p>
+  </section>
+
+  <!-- COLOR -->
+  <section class="sg-section">
+    <div class="section-head"><h2>Color</h2><span class="kicker">Paper · Ink · Brand</span></div>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#FCFBF8;border-bottom:1px solid var(--line)"></div><div class="meta"><b>Paper</b><span>#FCFBF8</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--line)"></div><div class="meta"><b>Surface</b><span>#FFFFFF</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#17150F"></div><div class="meta"><b>Ink</b><span>#17150F</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#6B665B"></div><div class="meta"><b>Ink soft</b><span>#6B665B</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#E6E2D7"></div><div class="meta"><b>Line</b><span>#E6E2D7</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#C42E2E"></div><div class="meta"><b>Brand</b><span>#C42E2E</span></div></div>
+    </div>
+    <div class="section-head" style="margin-top:var(--s5)"><h2 style="font-size:1.4rem">Category accents</h2></div>
+    <div class="swatches">
+      <div class="swatch"><div class="chip" style="background:#1F5C8B"></div><div class="meta"><b>Technology</b><span>#1F5C8B</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#9B2D4F"></div><div class="meta"><b>Culture</b><span>#9B2D4F</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#B26A12"></div><div class="meta"><b>Design</b><span>#B26A12</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#2E6E54"></div><div class="meta"><b>Science</b><span>#2E6E54</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#5A4FB0"></div><div class="meta"><b>Business</b><span>#5A4FB0</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#3E3E44"></div><div class="meta"><b>Opinion</b><span>#3E3E44</span></div></div>
+    </div>
+  </section>
+
+  <!-- TYPE -->
+  <section class="sg-section">
+    <div class="section-head"><h2>Typography</h2><span class="kicker">Caslon · Inter · Space Mono</span></div>
+    <div class="type-row"><small>Display / Libre Caslon Display · clamp 2.6–4rem</small><div class="display" style="font-size:3.2rem">How a Typeface Became a Border</div></div>
+    <div class="type-row"><small>H2 / Libre Caslon Display · 1.9rem</small><div class="display" style="font-size:1.9rem">The tyranny of the bottomless page</div></div>
+    <div class="type-row"><small>Lead / Libre Caslon · italic 1.4rem</small><p style="font-family:var(--serif);font-style:italic;font-size:1.4rem;margin:.3em 0">What happens to a magazine when it remembers it can end?</p></div>
+    <div class="type-row"><small>Body / Inter · 1.12rem / 1.75</small><p style="max-width:var(--read);margin:.3em 0">Infinite scroll was invented to solve a measurable problem: pagination cost clicks, and clicks cost readers. What it could not measure was the feeling on the other side of the glass.</p></div>
+    <div class="type-row"><small>Slug / Space Mono · the signature</small><div><span class="slug cat--tech">№ 042 <span class="sep">·</span> <b>Technology</b> <span class="sep">·</span> 7 min</span></div></div>
+    <div class="type-row"><small>Kicker / Space Mono uppercase</small><div><span class="kicker">Cover Story — Culture</span></div></div>
+  </section>
+
+  <!-- BUTTONS + PILLS -->
+  <section class="sg-section">
+    <div class="section-head"><h2>Controls</h2></div>
+    <div style="display:flex;gap:var(--s2);flex-wrap:wrap;align-items:center;margin-bottom:var(--s4)">
+      <a class="btn" href="#">Read the issue</a>
+      <a class="btn btn--brand" href="#">Subscribe</a>
+      <a class="btn btn--ghost" href="#">View all</a>
+      <a class="link-arrow" href="#">View all →</a>
+    </div>
+    <div style="display:flex;gap:var(--s2);flex-wrap:wrap;align-items:center">
+      <span class="pill cat--tech">Technology</span>
+      <span class="pill cat--culture">Culture</span>
+      <span class="pill cat--design">Design</span>
+      <span class="pill cat--science">Science</span>
+      <span class="pill cat--business">Business</span>
+      <span class="pill cat--opinion">Opinion</span>
+    </div>
+  </section>
+
+  <!-- CARD -->
+  <section class="sg-section">
+    <div class="section-head"><h2>Post card</h2></div>
+    <div style="max-width:360px">
+      <article class="card cat--science">
+        <a class="card-figure" href="#"><img src="https://picsum.photos/seed/recto-sg/640/360" alt="" loading="lazy" width="640" height="360"></a>
+        <div class="card-body">
+          <span class="slug">№ 040 <span class="sep">·</span> <b>Science</b> <span class="sep">·</span> 6 min</span>
+          <h3><a href="#">The Mathematics of a Good Queue</a></h3>
+          <p>Why the line you are standing in is, almost certainly, the wrong one.</p>
+          <div class="byline"><img src="https://i.pravatar.cc/60?img=5" alt="" width="30" height="30"><span class="who"><b>Tomas Vehkala</b></span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- BLOCKQUOTE -->
+  <section class="sg-section">
+    <div class="section-head"><h2>Blockquote</h2></div>
+    <div class="prose cat--culture">
+      <blockquote>An ending is not a limitation of the medium. It is the most generous thing a page can offer: the permission to stop.</blockquote>
+    </div>
+  </section>
+
+  <section class="sg-section" style="border:0">
+    <span class="kicker">Spacing · 8px scale</span>
+    <div style="display:flex;gap:var(--s1);align-items:flex-end;margin-top:var(--s2)">
+      <div style="background:var(--ink);width:8px;height:8px"></div>
+      <div style="background:var(--ink);width:16px;height:16px"></div>
+      <div style="background:var(--ink);width:24px;height:24px"></div>
+      <div style="background:var(--ink);width:32px;height:32px"></div>
+      <div style="background:var(--ink);width:48px;height:48px"></div>
+      <div style="background:var(--ink);width:64px;height:64px"></div>
+    </div>
+    <p class="kicker" style="margin-top:var(--s2)">8 · 16 · 24 · 32 · 48 · 64 px</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-base"><span>© 2026 RECTO Editions · Design system</span><span>Set in Libre Caslon &amp; Inter · Folios in Space Mono</span></div>
+  </div>
+</footer>
+
+</body>
+</html>

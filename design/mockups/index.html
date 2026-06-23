@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RECTO — Essays on technology, design & the work of making things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/recto.css">
+</head>
+<body>
+
+<!-- ===================== MASTHEAD / NAVBAR ===================== -->
+<header class="masthead">
+  <div class="container">
+    <div class="nav-row1">
+      <a class="brandmark" href="index.html">RECTO<sup>Issue 14</sup></a>
+      <nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="category.html">Technology</a></li>
+          <li><a href="category.html">Culture</a></li>
+          <li><a href="category.html">Design</a></li>
+          <li><a href="category.html">Science</a></li>
+          <li><a href="category.html">Business</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <a class="btn btn--brand" href="#newsletter">Subscribe</a>
+        <button class="hamburger" aria-label="Menu" aria-expanded="false" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="subnav">
+    <div class="container">
+      <nav class="subnav-track" aria-label="Categories">
+        <a href="category.html" aria-current="page">All</a>
+        <a href="category.html">Artificial Intelligence</a>
+        <a href="category.html">Typography</a>
+        <a href="category.html">The Open Web</a>
+        <a href="category.html">Hardware</a>
+        <a href="category.html">Climate</a>
+        <a href="category.html">Labour</a>
+        <a href="category.html">Interviews</a>
+        <a href="category.html">Long Reads</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ===================== HERO / COVER STORY ===================== -->
+  <section class="hero cat--culture" aria-labelledby="cover-title">
+    <div class="container">
+      <article class="hero-card">
+        <figure class="hero-figure">
+          <img src="https://picsum.photos/seed/recto-cover/900/560" alt="A printing plate engraved with passport typography" width="900" height="560">
+          <span class="folio">№ 014 · COVER</span>
+        </figure>
+        <div class="hero-body">
+          <span class="cover-label">Cover Story — Culture</span>
+          <span class="pill">Culture</span>
+          <h1 class="display" id="cover-title">How a Typeface Became a Border</h1>
+          <p class="excerpt">When a country redesigns its passport, it is really redrawing who belongs. We followed the type designers who spent four years on a document most people glance at once.</p>
+          <div class="byline">
+            <img src="https://i.pravatar.cc/84?img=47" alt="" width="42" height="42">
+            <span class="who"><b>Mara Okonkwo</b><span>June 18, 2026 · 14 min read</span></span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== LATEST POSTS ===================== -->
+  <section class="container" aria-labelledby="latest">
+    <div class="section-head">
+      <h2 id="latest">Latest dispatches</h2>
+      <a class="link-arrow" href="category.html">View all →</a>
+    </div>
+
+    <div class="grid-3">
+      <!-- card 1 -->
+      <article class="card cat--tech">
+        <a class="card-figure" href="article.html"><img src="https://picsum.photos/seed/recto-1/640/360" alt="A home server humming in a wooden cupboard" loading="lazy" width="640" height="360"></a>
+        <div class="card-body">
+          <span class="slug">№ 042 <span class="sep">·</span> <b>Technology</b> <span class="sep">·</span> 7 min</span>
+          <h3><a href="article.html">The Server in the Cupboard</a></h3>
+          <p>A generation raised on the cloud is quietly bringing the hardware back home — and learning what it costs to own your own bytes.</p>
+          <div class="byline"><img src="https://i.pravatar.cc/60?img=12" alt="" width="30" height="30"><span class="who"><b>Daniel Rehberg</b></span></div>
+        </div>
+      </article>
+      <!-- card 2 -->
+      <article class="card cat--design">
+        <a class="card-figure" href="article.html"><img src="https://picsum.photos/seed/recto-2/640/360" alt="A printed magazine with a deliberate final page" loading="lazy" width="640" height="360"></a>
+        <div class="card-body">
+          <span class="slug">№ 041 <span class="sep">·</span> <b>Design</b> <span class="sep">·</span> 9 min</span>
+          <h3><a href="article.html">Against the Infinite Scroll</a></h3>
+          <p>What happens to a magazine when it remembers that it is allowed to have an ending.</p>
+          <div class="byline"><img src="https://i.pravatar.cc/60?img=32" alt="" width="30" height="30"><span class="who"><b>Iris Lindqvist</b></span></div>
+        </div>
+      </article>
+      <!-- card 3 -->
+      <article class="card cat--science">
+        <a class="card-figure" href="article.html"><img src="https://picsum.photos/seed/recto-3/640/360" alt="People waiting in a winding queue" loading="lazy" width="640" height="360"></a>
+        <div class="card-body">
+          <span class="slug">№ 040 <span class="sep">·</span> <b>Science</b> <span class="sep">·</span> 6 min</span>
+          <h3><a href="article.html">The Mathematics of a Good Queue</a></h3>
+          <p>Why the line you are standing in is, almost certainly, the wrong one — and the quiet maths that proves it.</p>
+          <div class="byline"><img src="https://i.pravatar.cc/60?img=5" alt="" width="30" height="30"><span class="who"><b>Tomas Vehkala</b></span></div>
+        </div>
+      </article>
+      <!-- card 4 -->
+      <article class="card cat--business">
+        <a class="card-figure" href="article.html"><img src="https://picsum.photos/seed/recto-4/640/360" alt="A small studio of twelve people at work" loading="lazy" width="640" height="360"></a>
+        <div class="card-body">
+          <span class="slug">№ 039 <span class="sep">·</span> <b>Business</b> <span class="sep">·</span> 11 min</span>
+          <h3><a href="article.html">The Company That Refuses to Grow</a></h3>
+          <p>A twelve-person studio has turned down acquisition three times. Their reasoning is starting to spread.</p>
+          <div class="byline"><img src="https://i.pravatar.cc/60?img=20" alt="" width="30" height="30"><span class="who"><b>Priya Anand</b></span></div>
+        </div>
+      </article>
+      <!-- card 5 -->
+      <article class="card cat--opinion">
+        <a class="card-figure" href="article.html"><img src="https://picsum.photos/seed/recto-5/640/360" alt="A cursor hovering over the word user" loading="lazy" width="640" height="360"></a>
+        <div class="card-body">
+          <span class="slug">№ 038 <span class="sep">·</span> <b>Opinion</b> <span class="sep">·</span> 4 min</span>
+          <h3><a href="article.html">We Are Not “Users”</a></h3>
+          <p>The most quietly hostile word in software — and a few better things to call the people on the other side of the screen.</p>
+          <div class="byline"><img src="https://i.pravatar.cc/60?img=15" alt="" width="30" height="30"><span class="who"><b>June Castellano</b></span></div>
+        </div>
+      </article>
+      <!-- card 6 -->
+      <article class="card cat--tech">
+        <a class="card-figure" href="article.html"><img src="https://picsum.photos/seed/recto-6/640/360" alt="Old printed source code on yellowed paper" loading="lazy" width="640" height="360"></a>
+        <div class="card-body">
+          <span class="slug">№ 037 <span class="sep">·</span> <b>Technology</b> <span class="sep">·</span> 8 min</span>
+          <h3><a href="article.html">Code That Ages Like Paper</a></h3>
+          <p>The case for writing software you could still read, and trust, forty years from now.</p>
+          <div class="byline"><img src="https://i.pravatar.cc/60?img=52" alt="" width="30" height="30"><span class="who"><b>Daniel Rehberg</b></span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<!-- ===================== NEWSLETTER ===================== -->
+<section class="newsletter" id="newsletter">
+  <div class="container inner">
+    <div>
+      <h2 class="display">A letter, once a week.</h2>
+      <p>One essay, hand-picked, with a note on why we ran it. No tracking, no “growth hacks.” Unsubscribe in one click.</p>
+    </div>
+    <form class="news-form" onsubmit="return false">
+      <label class="sr-only" for="news-email">Email address</label>
+      <input id="news-email" type="email" placeholder="you@somewhere.com" autocomplete="email">
+      <button class="btn btn--brand" type="submit">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brandmark" href="index.html">RECTO<sup>Est. 2024</sup></a>
+        <p>Essays on technology, design, and the work of making things. Printed quarterly; published daily.</p>
+        <div class="socials">
+          <a class="icon-btn" href="#" aria-label="RECTO on Mastodon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8a4 4 0 0 1 8 0 4 4 0 0 1 8 0v6"/><path d="M8 13v-3M16 13v-3"/></svg></a>
+          <a class="icon-btn" href="#" aria-label="RECTO RSS"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5" fill="currentColor"/></svg></a>
+          <a class="icon-btn" href="#" aria-label="RECTO on X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h3l-7 8 8 12h-6l-5-7-5 7H-.5l8-9L0 2h6l4 6zM16 20h2L7 4H5z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Sections</h4>
+        <ul>
+          <li><a href="category.html">Technology</a></li>
+          <li><a href="category.html">Culture</a></li>
+          <li><a href="category.html">Design</a></li>
+          <li><a href="category.html">Science</a></li>
+          <li><a href="category.html">Business</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>The Magazine</h4>
+        <ul>
+          <li><a href="#">About RECTO</a></li>
+          <li><a href="#">Masthead</a></li>
+          <li><a href="#">Submissions</a></li>
+          <li><a href="#">Print archive</a></li>
+          <li><a href="styleguide.html">Design system</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>© 2026 RECTO Editions</span>
+      <span>Set in Libre Caslon &amp; Inter · Folios in Space Mono</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
